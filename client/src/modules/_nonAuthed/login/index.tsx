@@ -12,10 +12,11 @@ export const Route = createFileRoute('/_nonAuthed/login/')({ component: Login })
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  // const [token, setToken] = useState('')
   const [message, setMessage] = useState('')
+
   const { data, error, isMutating, trigger } = useLoginUser()
   const setToken = useAuthStore((state) => state.setToken)
+  const setUserId = useAuthStore((state) => state.setUserId)
 
   const { token } = data || {}
 
@@ -24,11 +25,12 @@ function Login() {
 
     try {
       const res = await trigger({ email, password })
-      if (res && res.token) {
+      if (res && res.token && res.userId) {
         setToken(res.token)
+        setUserId(res.userId)
       }
     } catch (error: any) {
-      console.log('EEEEEE', error)
+      console.log(error)
       setMessage('Login failed')
     }
   }

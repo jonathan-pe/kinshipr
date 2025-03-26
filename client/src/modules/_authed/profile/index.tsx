@@ -11,12 +11,8 @@ export const Route = createFileRoute('/_authed/profile/')({ component: Profile }
 
 function Profile() {
   const userId = useAuthStore((state) => state.userId)
-  const { data: user, error, mutate, isLoading } = useUserProfile(userId || '67e236ec47059513722ce324')
-  const {
-    trigger: updateProfile,
-    isMutating,
-    error: updateError,
-  } = useUpdateUserProfile(userId || '67e236ec47059513722ce324')
+  const { data: user, error, mutate, isLoading } = useUserProfile(userId || '')
+  const { trigger: updateProfile, isMutating, error: updateError } = useUpdateUserProfile(userId || '')
   const [bio, setBio] = useState('')
 
   useEffect(() => {
