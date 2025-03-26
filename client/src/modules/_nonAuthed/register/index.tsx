@@ -13,15 +13,16 @@ function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
-  const { registerUser } = useRegisterUser()
+  const { trigger: registerUser, isMutating, error, data, reset } = useRegisterUser()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const response = await registerUser({ username, email, password })
-      setMessage(response.data.message)
+      await registerUser({ username, email, password })
+      setMessage('Registered successfully')
     } catch (error: any) {
-      setMessage(error.response.data.message || 'Registration failed')
+      console.error(error)
+      setMessage('Failed to register')
     }
   }
 
@@ -53,7 +54,9 @@ function Register() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <Button type='submit'>Register</Button>
+        <Button type='submit' disabled={isMutating}>
+          {isMutating ? 'Registering...' : 'Register'}
+        </Button>
       </form>
       {message && <p className='mt-2 text-red-500'>{message}</p>}
     </div>
