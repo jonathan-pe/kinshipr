@@ -26,6 +26,11 @@ db.once('open', () => {
 // Routes
 app.use('/users', userRoutes)
 
+// healthcheck
+app.get('/healthcheck', (req, res) => {
+  res.send('ok')
+})
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
 })
