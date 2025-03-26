@@ -5,9 +5,14 @@ import axios from 'axios'
 
 const API_BASE_URL = 'http://localhost:4000/users'
 
-const getter = (url: string) => {
+const getter = (url: string, params?: { arg?: any }) => {
   const token = sessionStorage.getItem('token')
-  return axios.get(url, { headers: { Authorization: token ? `Bearer ${token}` : undefined } }).then((res) => res.data)
+  return axios
+    .get(url, {
+      headers: { Authorization: token ? `Bearer ${token}` : undefined },
+      params,
+    })
+    .then((res) => res.data)
 }
 
 const putter = async (url: string, { arg }: { arg: any }) => {
@@ -24,10 +29,11 @@ const poster = async (url: string, { arg }: { arg: any }) => {
     .then((res) => res.data)
 }
 
-const deleter = async (url: string) => {
+const deleter = async (url: string, params?: { arg?: any }) => {
+  const { arg } = params || {}
   const token = sessionStorage.getItem('token')
   return axios
-    .delete(url, { headers: { Authorization: token ? `Bearer ${token}` : undefined } })
+    .delete(url, { headers: { Authorization: token ? `Bearer ${token}` : undefined }, params: arg })
     .then((res) => res.data)
 }
 
@@ -42,7 +48,7 @@ export const useLoginUser = () => {
 }
 
 export const useUserProfile = (userId: string) => {
-  const { data, error, mutate, isLoading, isValidating } = useSWR(userId ? `${API_BASE_URL}/${userId}` : null, getter)
+  const { data, error, mutate, isLoading, isValidating } = useSWR(`${API_BASE_URL}/${userId}`, getter)
   return { data, error, mutate, isLoading, isValidating }
 }
 
@@ -57,6 +63,6 @@ export const useAddFriend = (userId: string) => {
 }
 
 export const useRemoveFriend = (userId: string) => {
-  const { trigger, isMutating, error, data, reset } = useSWRMutation(`${API_BASE_URL}/${userId}/friends/`, deleter)
+  const { trigger, isMutating, error, data, reset } = useSWRMutation(`${API_BASE_URL}/${userId}/friends`, deleter)
   return { trigger, isMutating, error, data, reset }
 }

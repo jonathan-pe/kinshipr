@@ -16,6 +16,6 @@ router.post('/login', loginUser)
 router.get('/:id', getUserProfile)
 router.put('/:id', updateUserProfile)
 router.post('/:id/friends', addFriend)
-router.delete('/:id/friends/:friendId', removeFriend)
+router.delete('/:id/friends', removeFriend)
 
 export default router

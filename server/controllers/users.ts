@@ -153,14 +153,15 @@ export const addFriend = async (req: Request, res: Response) => {
 export const removeFriend = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params.id)
+    const friend = await User.findById(req.query.friendId)
 
-    if (!user) {
+    if (!user || !friend) {
       res.status(404).json({ message: 'User not found' })
       return
     }
 
     user.friendList = user.friendList.filter(
-      (friendId: mongoose.Types.ObjectId) => friendId.toString() !== req.params.friendId
+      (friendId: mongoose.Types.ObjectId) => friendId.toString() !== req.query.friendId
     )
     await user.save()
 
