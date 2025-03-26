@@ -72,7 +72,7 @@ export const loginUser = async (req: Request, res: Response) => {
     // Create a JWT token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1h' })
 
-    res.status(200).json({ token })
+    res.status(200).json({ token, user: { ...user.toObject(), password: undefined } })
     return
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -93,7 +93,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
       return
     }
 
-    res.status(200).json({ user })
+    res.status(200).json({ user: { ...user, password: undefined } })
     return
   } catch (error) {
     res.status(500).json({ message: 'Something went wrong' })

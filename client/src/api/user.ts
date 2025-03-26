@@ -1,54 +1,62 @@
-// src/modules/user/userApi.ts
+// src/api/user.ts
 import useSWR from 'swr'
+import useSWRMutation from 'swr/mutation'
 import axios from 'axios'
 
 const API_BASE_URL = 'http://localhost:4000/users'
 
-const fetcher = (url: string, token?: string) =>
-  axios.get(url, { headers: { Authorization: token ? `Bearer ${token}` : undefined } }).then((res) => res.data)
+const getter = (url: string) => {
+  const token = sessionStorage.getItem('token')
+  return axios.get(url, { headers: { Authorization: token ? `Bearer ${token}` : undefined } }).then((res) => res.data)
+}
+
+const putter = async (url: string, { arg }: { arg: any }) => {
+  const token = sessionStorage.getItem('token')
+  return axios
+    .put(url, arg, { headers: { Authorization: token ? `Bearer ${token}` : undefined } })
+    .then((res) => res.data)
+}
+
+const poster = async (url: string, { arg }: { arg: any }) => {
+  const token = sessionStorage.getItem('token')
+  return axios
+    .post(url, arg, { headers: { Authorization: token ? `Bearer ${token}` : undefined } })
+    .then((res) => res.data)
+}
+
+const deleter = async (url: string) => {
+  const token = sessionStorage.getItem('token')
+  return axios
+    .delete(url, { headers: { Authorization: token ? `Bearer ${token}` : undefined } })
+    .then((res) => res.data)
+}
 
 export const useRegisterUser = () => {
-  const registerUser = async (userData: any) => {
-    return axios.post(`${API_BASE_URL}/register`, userData)
-  }
-  return { registerUser }
+  const { trigger, isMutating, error, data, reset } = useSWRMutation(`${API_BASE_URL}/register`, poster)
+  return { trigger, isMutating, error, data, reset }
 }
 
 export const useLoginUser = () => {
-  const loginUser = async (credentials: any) => {
-    return axios.post(`${API_BASE_URL}/login`, credentials)
-  }
-  return { loginUser }
+  const { trigger, isMutating, error, data, reset } = useSWRMutation(`${API_BASE_URL}/login`, poster)
+  return { trigger, isMutating, error, data, reset }
 }
 
-export const useUserProfile = (userId: string, token: string) => {
-  const { data, error, mutate } = useSWR(userId ? [`${API_BASE_URL}/${userId}`, token] : null, fetcher)
-  return { data, error, mutate }
+export const useUserProfile = (userId: string) => {
+  const { data, error, mutate, isLoading, isValidating } = useSWR(userId ? `${API_BASE_URL}/${userId}` : null, getter)
+  return { data, error, mutate, isLoading, isValidating }
 }
 
-export const useUpdateUserProfile = (userId: string, token: string) => {
-  const updateUserProfile = async (userData: any) => {
-    return axios.put(`${API_BASE_URL}/${userId}`, userData, { headers: { Authorization: `Bearer ${token}` } })
-  }
-  return { updateUserProfile }
+export const useUpdateUserProfile = (userId: string) => {
+  const { trigger, isMutating, error, data, reset } = useSWRMutation(`${API_BASE_URL}/${userId}`, putter)
+  return { trigger, isMutating, error, data, reset }
 }
 
-export const useAddFriend = (userId: string, token: string) => {
-  const addFriend = async (friendId: string) => {
-    return axios.post(
-      `${API_BASE_URL}/${userId}/friends`,
-      { friendId },
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-  }
-  return { addFriend }
+export const useAddFriend = (userId: string) => {
+  const { trigger, isMutating, error, data, reset } = useSWRMutation(`${API_BASE_URL}/${userId}/friends`, poster)
+  return { trigger, isMutating, error, data, reset }
 }
 
-export const useRemoveFriend = (userId: string, token: string) => {
-  const removeFriend = async (friendId: string) => {
-    return axios.delete(`${API_BASE_URL}/${userId}/friends/${friendId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-  }
-  return { removeFriend }
+export const useRemoveFriend = (userId: string) => {
+  const { trigger, isMutating, error, data, reset } = useSWRMutation(`${API_BASE_URL}/${userId}/friends/`, deleter)
+  return { trigger, isMutating, error, data, reset }
 }

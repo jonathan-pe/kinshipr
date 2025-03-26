@@ -5,24 +5,31 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
+import useAuthStore from '@/store/authStore'
 
 export const Route = createFileRoute('/_nonAuthed/login/')({ component: Login })
 
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [token, setToken] = useState('')
+  // const [token, setToken] = useState('')
   const [message, setMessage] = useState('')
-  const { loginUser } = useLoginUser()
+  const { data, error, isMutating, trigger } = useLoginUser()
+  const setToken = useAuthStore((state) => state.setToken)
+
+  const { token } = data || {}
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
     try {
-      const response = await loginUser({ email, password })
-      setToken(response.data.token)
-      setMessage('Login successful')
+      const res = await trigger({ email, password })
+      if (res && res.token) {
+        setToken(res.token)
+      }
     } catch (error: any) {
-      setMessage(error.response.data.message || 'Login failed')
+      console.log('EEEEEE', error)
+      setMessage('Login failed')
     }
   }
 
@@ -47,7 +54,7 @@ function Login() {
         <Button type='submit'>Login</Button>
       </form>
       {message && <p className='mt-2 text-red-500'>{message}</p>}
-      {token && <p className='mt-2'>Token: {token}</p>}
+      {!isMutating && token && <p className='mt-2'>Token: {token}</p>}
     </div>
   )
 }
