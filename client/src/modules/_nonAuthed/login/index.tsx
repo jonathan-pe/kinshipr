@@ -30,14 +30,18 @@ function Login() {
         setUserId(res.userId)
       }
     } catch (error: any) {
-      console.log(error)
+      console.error(error)
       setMessage('Login failed')
     }
   }
 
   return (
-    <div className='min-h-screen w-full flex flex-col items-center justify-center mx-auto'>
-      <h2 className='text-2xl font-bold mb-4'>Login</h2>
+    <div className='flex flex-1 flex-col items-center justify-center mx-auto'>
+      <div className='flex flex-col space-y-2 text-center'>
+        <h1 className='text-2xl font-semibold'>Welcome back</h1>
+        <p className='text-sm text-muted-foreground'>Enter your credentials to sign in to your account</p>
+      </div>
+
       <form onSubmit={handleSubmit} className='space-y-4'>
         <div>
           <Label htmlFor='email'>Email</Label>

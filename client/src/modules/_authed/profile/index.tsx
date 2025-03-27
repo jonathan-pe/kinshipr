@@ -58,8 +58,8 @@ function Profile() {
   if (error || !user || !user.user) return <div>Failed to load profile</div>
 
   return (
-    <div className='max-w-md mx-auto p-4'>
-      <h2 className='text-2xl font-bold mb-4'>Profile</h2>
+    <div className='max-w-7xl mx-auto p-6 md:p-8 lg:p-10 space-y-6'>
+      <h2 className='text-3xl font-bold mb-4'>Profile</h2>
       <div className='space-y-4'>
         <div>
           <Label htmlFor='bio'>Bio</Label>
