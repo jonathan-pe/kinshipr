@@ -59,33 +59,9 @@ a:hover {
   color: #535bf2;
 }
 
-html,
-body,
-#root {
-  padding: 0;
-  margin: 0;
-  display: flex;
-  place-items: center;
-  width: 100%;
-  min-height: 100vh;
-}
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: 'Poppins', sans-serif;
-}
-
-body {
-  font-family: 'Inter', sans-serif;
 }
 
 button {
@@ -199,4 +175,117 @@ button:focus-visible {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* kinshipr theming */
+
+html,
+body,
+#root {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  place-items: center;
+  width: 100%;
+  min-height: 100vh;
+}
+
+:root {
+  /* Font Families */
+  --heading-font: 'Poppins', sans-serif;
+  --body-font: 'Inter', sans-serif;
+
+  /* Font Sizes (using rem units for scalability) */
+  --base-font-size: 1rem; /* 1rem = 16px (default browser font size) */
+  --h1-font-size: 2.5rem; /* 40px */
+  --h2-font-size: 2rem; /* 32px */
+  --h3-font-size: 1.75rem; /* 28px */
+  --h4-font-size: 1.5rem; /* 24px */
+  --h5-font-size: 1.25rem; /* 20px */
+  --h6-font-size: 1.125rem; /* 18px */
+  --body-font-size: 1rem; /* 16px */
+  --small-font-size: 0.875rem; /* 14px */
+  --x-small-font-size: 0.75rem; /* 12px */
+
+  /* Line Heights */
+  --heading-line-height: 1.2;
+  --body-line-height: 1.5;
+
+  /* Letter Spacing */
+  --heading-letter-spacing: -0.02em;
+  --body-letter-spacing: 0.01em;
+
+  /* Font Weights */
+  --heading-font-weight: 600; /* Semi-bold */
+  --body-font-weight: 400; /* Regular */
+  --bold-font-weight: 700; /* Bold */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  font-family: var(--body-font);
+  font-size: var(--body-font-size);
+  line-height: var(--body-line-height);
+  letter-spacing: var(--body-letter-spacing);
+  font-weight: var(--body-font-weight);
+}
+
+h1 {
+  font-family: var(--heading-font);
+  font-size: var(--h1-font-size);
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-letter-spacing);
+  font-weight: var(--heading-font-weight);
+}
+
+h2 {
+  font-family: var(--heading-font);
+  font-size: var(--h2-font-size);
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-letter-spacing);
+  font-weight: var(--heading-font-weight);
+}
+
+h3 {
+  font-family: var(--heading-font);
+  font-size: var(--h3-font-size);
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-letter-spacing);
+  font-weight: var(--heading-font-weight);
+}
+
+h4 {
+  font-family: var(--heading-font);
+  font-size: var(--h4-font-size);
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-letter-spacing);
+  font-weight: var(--heading-font-weight);
+}
+
+h5 {
+  font-family: var(--heading-font);
+  font-size: var(--h5-font-size);
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-letter-spacing);
+  font-weight: var(--heading-font-weight);
+}
+
+h6 {
+  font-family: var(--heading-font);
+  font-size: var(--h6-font-size);
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-letter-spacing);
+  font-weight: var(--heading-font-weight);
 }
