@@ -12,24 +12,30 @@ import { Eye, EyeClosed, LoaderCircle } from 'lucide-react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { AxiosError } from 'axios'
 
-const FormSchema = z.object({
-  username: z
-    .string()
-    .regex(/^[a-zA-Z0-9_\-.]+$/, { message: 'Username can only contain letters, numbers, and "_", "-", or "."' })
-    .nonempty({ message: 'Username is required' })
-    .min(3, { message: 'Username must be at least 3 characters' })
-    .max(20, { message: 'Username must be at most 20 characters' }),
-  email: z.string().nonempty({ message: 'Email is required' }).email({ message: 'Invalid email address' }),
-  password: z
-    .string()
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/, {
-      message:
-        'Password must contain an uppercase letter, a lowercase letter, a number AND a special character (!@#$%^&*)',
-    })
-    .min(8, { message: 'Password must be at least 8 characters' })
-    .max(50, { message: 'Password must be at most 50 characters' })
-    .nonempty({ message: 'Password is required' }),
-})
+const FormSchema = z
+  .object({
+    username: z
+      .string()
+      .regex(/^[a-zA-Z0-9_\-.]+$/, { message: 'Username can only contain letters, numbers, and "_", "-", or "."' })
+      .nonempty({ message: 'Username is required' })
+      .min(3, { message: 'Username must be at least 3 characters' })
+      .max(20, { message: 'Username must be at most 20 characters' }),
+    email: z.string().nonempty({ message: 'Email is required' }).email({ message: 'Invalid email address' }),
+    password: z
+      .string()
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/, {
+        message:
+          'Password must contain an uppercase letter, a lowercase letter, a number AND a special character (!@#$%^&*)',
+      })
+      .min(8, { message: 'Password must be at least 8 characters' })
+      .max(50, { message: 'Password must be at most 50 characters' })
+      .nonempty({ message: 'Password is required' }),
+    confirmPassword: z.string().nonempty(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
 
 export function RegisterForm({ className, ...props }: React.ComponentPropsWithoutRef<'form'>) {
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -38,6 +44,7 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
       username: '',
       email: '',
       password: '',
+      confirmPassword: '',
     },
   })
 
@@ -104,6 +111,34 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
             render={({ field }) => (
               <FormItem>
                 <FormLabel htmlFor='password'>Password</FormLabel>
+                <FormControl>
+                  <div className='relative'>
+                    <Input placeholder='B3stp@ssw0rd' {...field} type={showPassword ? 'text' : 'password'} />
+                    <Button
+                      variant='transparent'
+                      size='icon'
+                      type='button'
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setShowPassword((prev) => !prev)
+                      }}
+                      className='absolute inset-y-0 right-0 flex items-center hover:bg-transparent'
+                    >
+                      {showPassword ? <EyeClosed /> : <Eye />}
+                    </Button>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='confirmPassword'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor='confirmPassword'>Confirm Password</FormLabel>
                 <FormControl>
                   <div className='relative'>
                     <Input placeholder='B3stp@ssw0rd' {...field} type={showPassword ? 'text' : 'password'} />
