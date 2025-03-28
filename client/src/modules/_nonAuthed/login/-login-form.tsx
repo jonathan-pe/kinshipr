@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 import { useState } from 'react'
 import { Eye, EyeClosed, LoaderCircle } from 'lucide-react'
 import { Link, useNavigate } from '@tanstack/react-router'
+import { AxiosError } from 'axios'
 
 const FormSchema = z.object({
   email: z.string().nonempty({ message: 'Email is required' }).email({ message: 'Invalid email address' }),
@@ -42,9 +43,12 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         toast.success('Logged in successfully')
         navigate({ to: '/profile' })
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(error)
-      toast.error(error.response?.data?.message ?? 'An error occurred while logging in')
+
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message ?? 'An error occurred while logging in')
+      }
     }
   }
 

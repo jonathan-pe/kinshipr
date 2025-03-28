@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 import { useState } from 'react'
 import { Eye, EyeClosed, LoaderCircle } from 'lucide-react'
 import { Link, useNavigate } from '@tanstack/react-router'
+import { AxiosError } from 'axios'
 
 const FormSchema = z.object({
   username: z
@@ -50,9 +51,12 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
       await registerUser(data)
       toast.success('Registered successfully! Please log in to continue.')
       navigate({ to: '/login' })
-    } catch (error: any) {
+    } catch (error) {
       console.error(error)
-      toast.error(error.response?.data?.message ?? 'An error occurred while registering. Please try again.')
+
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message ?? 'An error occurred while registering. Please try again.')
+      }
     }
   }
 

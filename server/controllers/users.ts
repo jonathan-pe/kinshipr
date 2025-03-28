@@ -7,9 +7,22 @@ import mongoose from 'mongoose'
 import { z } from 'zod'
 
 const registerUserSchema = z.object({
-  username: z.string().min(1),
-  email: z.string().email(),
-  password: z.string().min(6),
+  username: z
+    .string()
+    .regex(/^[a-zA-Z0-9_\-.]+$/, { message: 'Username can only contain letters, numbers, and "_", "-", or "."' })
+    .nonempty({ message: 'Username is required' })
+    .min(3, { message: 'Username must be at least 3 characters' })
+    .max(20, { message: 'Username must be at most 20 characters' }),
+  email: z.string().nonempty({ message: 'Email is required' }).email({ message: 'Invalid email address' }),
+  password: z
+    .string()
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/, {
+      message:
+        'Password must contain an uppercase letter, a lowercase letter, a number AND a special character (!@#$%^&*)',
+    })
+    .min(8, { message: 'Password must be at least 8 characters' })
+    .max(50, { message: 'Password must be at most 50 characters' })
+    .nonempty({ message: 'Password is required' }),
 })
 
 const loginUserSchema = z.object({
