@@ -9,11 +9,11 @@
 
   /* Color Palette */
   --neutral-white: oklch(1 0 0);
-  --neutral-very-light: oklch(0.98 0.003 300);
-  --neutral-light: oklch(0.94 0.004 300);
-  --neutral-medium: oklch(0.92 0.004 300);
-  --neutral-dark: oklch(0.38 0.005 300);
-  --neutral-very-dark: oklch(0.14 0.005 300);
+  --neutral-very-light: oklch(0.98 0.003 280);
+  --neutral-light: oklch(0.94 0.004 280);
+  --neutral-medium: oklch(0.75 0.01 280);
+  --neutral-dark: oklch(0.38 0.005 280);
+  --neutral-very-dark: oklch(0.14 0.005 280);
 
   color-scheme: light dark;
   color: oklch(var(--neutral-dark)); /* Dark text on light background */
@@ -27,7 +27,7 @@
   /* Theme Variables */
   --radius: 0.625rem;
   --background: var(--neutral-very-light);
-  --foreground: var(--neutral-dark);
+  --foreground: var(--neutral-very-dark);
   --card: var(--neutral-white);
   --card-foreground: var(--neutral-dark);
   --popover: var(--neutral-white);
@@ -86,7 +86,7 @@ a:hover {
 .dark {
   color-scheme: dark; /* Add color-scheme property */
   --background: var(--neutral-very-dark);
-  --foreground: var(--neutral-light); /* Use slightly less intense text color */
+  --foreground: var(--neutral-light);
   --card: var(--neutral-dark); /* Dark card background */
   --card-foreground: var(--neutral-very-light);
   --popover: var(--neutral-dark); /* Dark popover background */
@@ -94,7 +94,7 @@ a:hover {
   --primary: oklch(0.53 0.16 280);
   --primary-foreground: var(--neutral-white);
   --secondary: oklch(0.8 0.13 147);
-  --secondary-foreground: var(--neutral-very-dark); /* use slightly less intense text color */
+  --secondary-foreground: var(--neutral-very-dark);
   --muted: var(--neutral-dark); /* Use medium dark for muted elements */
   --muted-foreground: var(--neutral-medium);
   --accent: var(--neutral-dark);
