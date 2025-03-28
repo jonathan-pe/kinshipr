@@ -5,5 +5,5 @@ export const Route = createFileRoute('/_nonAuthed/')({
 })
 
 function Home() {
-  return <div className='min-h-screen w-full flex flex-col items-center justify-center mx-auto'>Landing Page</div>
+  return <div className='flex flex-1 flex-col items-center justify-center mx-auto'>Landing Page</div>
 }
