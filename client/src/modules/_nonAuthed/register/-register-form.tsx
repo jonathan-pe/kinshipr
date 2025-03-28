@@ -73,7 +73,7 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
               <FormItem>
                 <FormLabel htmlFor='email'>Username</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input placeholder='bestuser' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -87,7 +87,7 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
               <FormItem>
                 <FormLabel htmlFor='email'>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input placeholder='bestuser@example.com' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -102,7 +102,7 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
                 <FormLabel htmlFor='password'>Password</FormLabel>
                 <FormControl>
                   <div className='relative'>
-                    <Input {...field} type={showPassword ? 'text' : 'password'} />
+                    <Input placeholder='b3stp@ssw0rd' {...field} type={showPassword ? 'text' : 'password'} />
                     <Button
                       variant='transparent'
                       size='icon'
