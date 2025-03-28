@@ -11,7 +11,7 @@ const ThemeToggle = () => {
   }
 
   return (
-    <Button variant='outline' size='icon' onClick={toggleTheme}>
+    <Button variant='outline' size='icon' type='button' onClick={toggleTheme}>
       {theme === 'light' ? <Moon /> : <Sun />}
     </Button>
   )

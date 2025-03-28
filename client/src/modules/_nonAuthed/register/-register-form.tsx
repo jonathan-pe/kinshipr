@@ -1,48 +1,58 @@
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import useAuthStore from '@/store/authStore'
-import { useLoginUser } from '@/api/user'
+import { useRegisterUser } from '@/api/user'
 import { toast } from 'sonner'
 import { useState } from 'react'
 import { Eye, EyeClosed, LoaderCircle } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 
 const FormSchema = z.object({
+  username: z
+    .string()
+    .regex(/^[a-zA-Z0-9_\-.]+$/, { message: 'Username can only contain letters, numbers, and "_", "-", or "."' })
+    .nonempty({ message: 'Username is required' })
+    .min(3, { message: 'Username must be at least 3 characters' })
+    .max(20, { message: 'Username must be at most 20 characters' }),
   email: z.string().nonempty({ message: 'Email is required' }).email({ message: 'Invalid email address' }),
-  password: z.string().nonempty({ message: 'Password is required' }),
+  password: z
+    .string()
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/, {
+      message:
+        'Password must contain an uppercase letter, a lowercase letter, a number AND a special character (!@#$%^&*)',
+    })
+    .min(8, { message: 'Password must be at least 8 characters' })
+    .max(50, { message: 'Password must be at most 50 characters' })
+    .nonempty({ message: 'Password is required' }),
 })
 
-export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'form'>) {
+export function RegisterForm({ className, ...props }: React.ComponentPropsWithoutRef<'form'>) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      username: '',
       email: '',
       password: '',
     },
   })
 
-  const { isMutating: isLoggingInUser, trigger: loginUser } = useLoginUser()
-  const setToken = useAuthStore((state) => state.setToken)
-  const setUserId = useAuthStore((state) => state.setUserId)
+  const { trigger: registerUser, isMutating: isRegistering } = useRegisterUser()
   const [showPassword, setShowPassword] = useState(false)
+
+  const navigate = useNavigate()
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
-      const res = await loginUser(data)
-      if (res && res.token && res.userId) {
-        setToken(res.token)
-        setUserId(res.userId)
-        toast.success('Logged in successfully')
-      }
+      await registerUser(data)
+      toast.success('Registered successfully! Please log in to continue.')
+      navigate({ to: '/login' })
     } catch (error: any) {
       console.error(error)
-      toast.error(error.response?.data?.message ?? 'An error occurred while logging in')
+      toast.error('An error occurred while registering. Please try again.')
     }
   }
 
@@ -50,12 +60,26 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className={cn('flex flex-col gap-6', className)} {...props}>
         <div className='flex flex-col items-center gap-2 text-center'>
-          <h1 className='text-2xl font-bold'>Login to your account</h1>
+          <h1 className='text-2xl font-bold'>Register</h1>
           <p className='text-balance text-sm text-muted-foreground'>
-            Enter your credentials below to login to your account
+            Enter your credentials below to register for an account
           </p>
         </div>
         <div className='grid gap-6'>
+          <FormField
+            control={form.control}
+            name='username'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor='email'>Username</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name='email'
@@ -63,7 +87,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               <FormItem>
                 <FormLabel htmlFor='email'>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder='username@domain.com' {...field} />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -75,12 +99,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             name='password'
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor='password'>
-                  <Label htmlFor='password'>Password</Label>
-                  <a href='#' className='ml-auto text-sm underline-offset-4 hover:underline'>
-                    Forgot your password?
-                  </a>
-                </FormLabel>
+                <FormLabel htmlFor='password'>Password</FormLabel>
                 <FormControl>
                   <div className='relative'>
                     <Input {...field} type={showPassword ? 'text' : 'password'} />
@@ -102,8 +121,8 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               </FormItem>
             )}
           />
-          <Button type='submit' className='w-full' disabled={isLoggingInUser}>
-            {isLoggingInUser ? <LoaderCircle className='animate-spin' /> : 'Login'}
+          <Button type='submit' className='w-full' disabled={isRegistering}>
+            {isRegistering ? <LoaderCircle className='animate-spin' /> : 'Register'}
           </Button>
           {/* <div className='relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border'>
             <span className='relative z-10 bg-background px-2 text-muted-foreground'>Or continue with</span>
@@ -119,7 +138,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           </Button> */}
         </div>
         <div className='text-center text-sm'>
-          Don&apos;t have an account? <Link to='/register'>Sign up</Link>
+          Already have an account? <Link to='/login'>Log In</Link>
         </div>
       </form>
     </Form>
