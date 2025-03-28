@@ -11,7 +11,7 @@ import { useLoginUser } from '@/api/user'
 import { toast } from 'sonner'
 import { useState } from 'react'
 import { Eye, EyeClosed, LoaderCircle } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 
 const FormSchema = z.object({
   email: z.string().nonempty({ message: 'Email is required' }).email({ message: 'Invalid email address' }),
@@ -26,6 +26,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       password: '',
     },
   })
+  const navigate = useNavigate()
 
   const { isMutating: isLoggingInUser, trigger: loginUser } = useLoginUser()
   const setToken = useAuthStore((state) => state.setToken)
@@ -39,6 +40,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         setToken(res.token)
         setUserId(res.userId)
         toast.success('Logged in successfully')
+        navigate({ to: '/profile' })
       }
     } catch (error: any) {
       console.error(error)

@@ -52,7 +52,7 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
       navigate({ to: '/login' })
     } catch (error: any) {
       console.error(error)
-      toast.error('An error occurred while registering. Please try again.')
+      toast.error(error.response?.data?.message ?? 'An error occurred while registering. Please try again.')
     }
   }
 
