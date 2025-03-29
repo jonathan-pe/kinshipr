@@ -1,21 +1,11 @@
 // server/routes/users.ts
 import express from 'express'
-import {
-  registerUser,
-  loginUser,
-  getUserProfile,
-  updateUserProfile,
-  addFriend,
-  removeFriend,
-} from '../controllers/users'
+import { createUser, getUser, updateUser, deleteUser } from '@/controllers/users'
 
 const router = express.Router()
 
-router.post('/register', registerUser)
-router.post('/login', loginUser)
-router.get('/:id', getUserProfile)
-router.put('/:id', updateUserProfile)
-router.post('/:id/friends', addFriend)
-router.delete('/:id/friends', removeFriend)
-
+router.post('/', createUser) // Create a new user
+router.get('/', getUser) // Get the current user's details
+router.put('/', updateUser) // Update the current user's details
+router.delete('/', deleteUser) // Delete the current user
 export default router

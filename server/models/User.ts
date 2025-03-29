@@ -2,21 +2,20 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
 interface IUser extends Document {
-  username: string
+  userId: string // Clerk user ID
   email: string
-  password: string
-  profilePicture?: string
-  bio?: string
-  friendList: mongoose.Types.ObjectId[]
+  isBlocked?: boolean
+  isActive?: boolean
 }
 
-const UserSchema: Schema = new Schema({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  profilePicture: { type: String },
-  bio: { type: String },
-  friendList: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-})
+const UserSchema: Schema = new Schema(
+  {
+    userId: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    isBlocked: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
+  },
+  { timestamps: true } // Automatically manage createdAt and updatedAt fields
+)
 
 export default mongoose.model<IUser>('User', UserSchema)
