@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { LoginForm } from '@/modules/_nonAuthed/login/-login-form'
+import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_nonAuthed/')({
   component: Home,
@@ -6,9 +7,9 @@ export const Route = createFileRoute('/_nonAuthed/')({
 
 function Home() {
   return (
-    <div className='flex flex-1 flex-col items-center justify-center mx-auto'>
-      Landing Page
-      <Link to='/login'>Login</Link>
+    <div className='flex flex-1 items-center justify-between mx-auto space-x-48'>
+      <h1 className='text-3xl font-bold'>Welcome to Kinshipr</h1>
+      <LoginForm />
     </div>
   )
 }
