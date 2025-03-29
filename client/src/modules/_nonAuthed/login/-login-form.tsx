@@ -6,13 +6,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import useAuthStore from '@/store/authStore'
-import { useLoginUser } from '@/api/user'
 import { toast } from 'sonner'
 import { useState } from 'react'
 import { Eye, EyeClosed, LoaderCircle } from 'lucide-react'
 import { Link, useNavigate } from '@tanstack/react-router'
-import { AxiosError } from 'axios'
+import { useSignIn } from '@clerk/clerk-react'
+import { isClerkError } from '@/types/clerk'
 
 const FormSchema = z.object({
   email: z.string().nonempty({ message: 'Email is required' }).email({ message: 'Invalid email address' }),
@@ -28,26 +27,37 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     },
   })
   const navigate = useNavigate()
+  const { signIn, isLoaded: isClerkLoaded } = useSignIn()
 
-  const { isMutating: isLoggingInUser, trigger: loginUser } = useLoginUser()
-  const setToken = useAuthStore((state) => state.setToken)
-  const setUserId = useAuthStore((state) => state.setUserId)
   const [showPassword, setShowPassword] = useState(false)
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
-      const res = await loginUser(data)
-      if (res && res.token && res.userId) {
-        setToken(res.token)
-        setUserId(res.userId)
+      const response = await signIn?.create({
+        strategy: 'password',
+        identifier: data.email,
+        password: data.password,
+      })
+
+      if (response?.status === 'complete') {
         toast.success('Logged in successfully')
         navigate({ to: '/profile' })
+      } else if (response?.status === 'needs_first_factor') {
+        toast.error('Please verify your email address')
+      } else if (response?.status === 'needs_second_factor') {
+        toast.error('Please verify your email address')
+      } else if (response?.status === 'needs_identifier') {
+        toast.error('Please enter your email address')
+      } else if (response?.status === 'needs_new_password') {
+        toast.error('Please enter your new password')
+      } else {
+        toast.error('An error occurred while logging in')
       }
     } catch (error) {
-      console.error(error)
-
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message ?? 'An error occurred while logging in')
+      if (isClerkError(error)) {
+        error.errors?.forEach((err) => {
+          toast.error(err.message)
+        })
       }
     }
   }
@@ -108,8 +118,8 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               </FormItem>
             )}
           />
-          <Button type='submit' className='w-full' disabled={isLoggingInUser}>
-            {isLoggingInUser ? <LoaderCircle className='animate-spin' /> : 'Login'}
+          <Button type='submit' className='w-full' disabled={!isClerkLoaded}>
+            {!isClerkLoaded ? <LoaderCircle className='animate-spin' /> : 'Login'}
           </Button>
           {/* <div className='relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border'>
             <span className='relative z-10 bg-background px-2 text-muted-foreground'>Or continue with</span>
