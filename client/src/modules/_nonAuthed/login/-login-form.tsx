@@ -149,7 +149,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           </div>
           <Button variant='outline' className='w-full' type='button' onClick={() => loginWithProvider('oauth_google')}>
             <img src={GoogleIcon} className='h-auto max-w-4' />
-            Login with Google
+            Log in with Google
           </Button>
         </div>
         <div className='text-center text-sm'>
