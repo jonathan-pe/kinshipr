@@ -9,8 +9,9 @@ import { useState } from 'react'
 import { LoaderCircle } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useSignUp } from '@clerk/clerk-react'
-import { isClerkError } from '@/types/clerk'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
+import { isClerkAPIResponseError } from '@clerk/clerk-js'
+import { MAIN_HOME_URL } from '@/constants'
 
 const VerifyFormSchema = z.object({
   code: z.string().nonempty({ message: 'Code is required' }),
@@ -45,12 +46,12 @@ export function VerifyForm({ className, ...props }: React.ComponentPropsWithoutR
       if (signUpAttempt.status === 'complete') {
         await setActive({ session: signUpAttempt.createdSessionId })
         toast.success('Registered successfully!')
-        navigate({ to: '/profile' })
+        navigate({ to: MAIN_HOME_URL })
       } else if (signUpAttempt.status === 'missing_requirements') {
         toast.error('Please verify your email address')
       }
     } catch (error) {
-      if (isClerkError(error)) {
+      if (isClerkAPIResponseError(error)) {
         error.errors?.forEach((err) => {
           toast.error(err.message)
         })

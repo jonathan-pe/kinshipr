@@ -10,7 +10,7 @@ import { useState } from 'react'
 import { Eye, EyeClosed, LoaderCircle } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { useSignUp } from '@clerk/clerk-react'
-import { isClerkError } from '@/types/clerk'
+import { isClerkAPIResponseError } from '@clerk/clerk-js'
 
 interface RegisterFormProps extends React.ComponentPropsWithoutRef<'form'> {
   setVerifying: (verifying: boolean) => void
@@ -75,7 +75,7 @@ export function RegisterForm({ setVerifying, className, ...props }: RegisterForm
       setVerifying(true)
     } catch (error) {
       console.error(error)
-      if (isClerkError(error)) {
+      if (isClerkAPIResponseError(error)) {
         error.errors?.forEach((err) => {
           toast.error(err.message)
         })

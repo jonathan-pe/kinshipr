@@ -11,10 +11,11 @@ import { useState } from 'react'
 import { Eye, EyeClosed, LoaderCircle } from 'lucide-react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useSignIn } from '@clerk/clerk-react'
-import { isClerkError } from '@/types/clerk'
+import { isClerkAPIResponseError } from '@clerk/clerk-js'
 
 import GoogleIcon from '@/assets/google-icon.png'
 import { OAuthStrategy } from '@clerk/types'
+import { MAIN_HOME_URL } from '@/constants'
 
 const FormSchema = z.object({
   email: z.string().nonempty({ message: 'Email is required' }).email({ message: 'Invalid email address' }),
@@ -47,7 +48,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       if (response?.status === 'complete') {
         await setActive({ session: response.createdSessionId })
         toast.success('Logged in successfully')
-        navigate({ to: '/profile' })
+        navigate({ to: MAIN_HOME_URL })
       } else if (response?.status === 'needs_first_factor') {
         toast.error('Please verify your email address')
       } else if (response?.status === 'needs_second_factor') {
@@ -60,7 +61,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         toast.error('An error occurred while logging in')
       }
     } catch (error) {
-      if (isClerkError(error)) {
+      if (isClerkAPIResponseError(error)) {
         error.errors?.forEach((err) => {
           toast.error(err.message)
         })
@@ -69,21 +70,19 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   }
 
   const loginWithProvider = async (provider: OAuthStrategy) => {
-    // try {
-    //   const response = await signIn?.authenticateWithRedirect({
-    //     strategy: provider,
-    //   })
-    //   if (response?.status === 'complete') {
-    //     toast.success('Logged in successfully')
-    //     navigate({ to: '/profile' })
-    //   }
-    // } catch (error) {
-    //   if (isClerkError(error)) {
-    //     error.errors?.forEach((err) => {
-    //       toast.error(err.message)
-    //     })
-    //   }
-    // }
+    try {
+      await signIn?.authenticateWithRedirect({
+        strategy: provider,
+        redirectUrl: '/login/sso-callback',
+        redirectUrlComplete: MAIN_HOME_URL,
+      })
+    } catch (error) {
+      if (isClerkAPIResponseError(error)) {
+        error.errors.forEach((err) => {
+          toast.error(err.message)
+        })
+      }
+    }
   }
 
   return (
