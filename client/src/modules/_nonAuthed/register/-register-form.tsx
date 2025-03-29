@@ -5,21 +5,25 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRegisterUser } from '@/api/user'
 import { toast } from 'sonner'
 import { useState } from 'react'
 import { Eye, EyeClosed, LoaderCircle } from 'lucide-react'
-import { Link, useNavigate } from '@tanstack/react-router'
-import { AxiosError } from 'axios'
+import { Link } from '@tanstack/react-router'
+import { useSignUp } from '@clerk/clerk-react'
+import { isClerkError } from '@/types/clerk'
 
-const FormSchema = z
+interface RegisterFormProps extends React.ComponentPropsWithoutRef<'form'> {
+  setVerifying: (verifying: boolean) => void
+}
+
+const RegisterFormSchema = z
   .object({
     username: z
       .string()
       .regex(/^[a-zA-Z0-9_\-.]+$/, { message: 'Username can only contain letters, numbers, and "_", "-", or "."' })
       .nonempty({ message: 'Username is required' })
       .min(3, { message: 'Username must be at least 3 characters' })
-      .max(20, { message: 'Username must be at most 20 characters' }),
+      .max(30, { message: 'Username must be at most 20 characters' }),
     email: z.string().nonempty({ message: 'Email is required' }).email({ message: 'Invalid email address' }),
     password: z
       .string()
@@ -37,9 +41,10 @@ const FormSchema = z
     path: ['confirmPassword'],
   })
 
-export function RegisterForm({ className, ...props }: React.ComponentPropsWithoutRef<'form'>) {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+export function RegisterForm({ setVerifying, className, ...props }: RegisterFormProps) {
+  const { isLoaded, signUp } = useSignUp()
+  const registerForm = useForm<z.infer<typeof RegisterFormSchema>>({
+    resolver: zodResolver(RegisterFormSchema),
     defaultValues: {
       username: '',
       email: '',
@@ -48,28 +53,43 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
     },
   })
 
-  const { trigger: registerUser, isMutating: isRegistering } = useRegisterUser()
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const navigate = useNavigate()
+  const onSubmit = async (data: z.infer<typeof RegisterFormSchema>) => {
+    if (!isLoaded) return
 
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
-      await registerUser(data)
-      toast.success('Registered successfully! Please log in to continue.')
-      navigate({ to: '/login' })
+      setLoading(true)
+      await signUp.create({
+        emailAddress: data.email,
+        password: data.password,
+        username: data.username,
+      })
+
+      await signUp.prepareEmailAddressVerification({
+        strategy: 'email_code',
+      })
+
+      toast.success('Verification code sent to your email address')
+      setVerifying(true)
     } catch (error) {
       console.error(error)
-
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message ?? 'An error occurred while registering. Please try again.')
+      if (isClerkError(error)) {
+        error.errors?.forEach((err) => {
+          toast.error(err.message)
+        })
+      } else {
+        toast.error('An error occurred while registering', { description: 'Please try again' })
       }
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className={cn('flex flex-col gap-6', className)} {...props}>
+    <Form {...registerForm}>
+      <form onSubmit={registerForm.handleSubmit(onSubmit)} className={cn('flex flex-col gap-6', className)} {...props}>
         <div className='flex flex-col items-center gap-2 text-center'>
           <h1 className='text-2xl font-bold'>Register</h1>
           <p className='text-balance text-sm text-muted-foreground'>
@@ -78,7 +98,7 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
         </div>
         <div className='grid gap-6'>
           <FormField
-            control={form.control}
+            control={registerForm.control}
             name='username'
             render={({ field }) => (
               <FormItem>
@@ -92,7 +112,7 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
           />
 
           <FormField
-            control={form.control}
+            control={registerForm.control}
             name='email'
             render={({ field }) => (
               <FormItem>
@@ -106,7 +126,7 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
           />
 
           <FormField
-            control={form.control}
+            control={registerForm.control}
             name='password'
             render={({ field }) => (
               <FormItem>
@@ -134,7 +154,7 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
           />
 
           <FormField
-            control={form.control}
+            control={registerForm.control}
             name='confirmPassword'
             render={({ field }) => (
               <FormItem>
@@ -160,8 +180,8 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
               </FormItem>
             )}
           />
-          <Button type='submit' className='w-full' disabled={isRegistering}>
-            {isRegistering ? <LoaderCircle className='animate-spin' /> : 'Register'}
+          <Button type='submit' className='w-full' disabled={loading}>
+            {loading ? <LoaderCircle className='animate-spin' /> : 'Register'}
           </Button>
           {/* <div className='relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border'>
             <span className='relative z-10 bg-background px-2 text-muted-foreground'>Or continue with</span>

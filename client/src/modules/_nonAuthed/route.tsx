@@ -1,7 +1,15 @@
 import ThemeToggle from '@/components/theme-toggle'
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { GoogleOneTap } from '@clerk/clerk-react'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_nonAuthed')({
+  beforeLoad: ({ context }) => {
+    const { isSignedIn } = context.auth
+
+    if (isSignedIn) {
+      throw redirect({ to: '/profile' })
+    }
+  },
   component: RouteComponent,
 })
 
@@ -13,6 +21,7 @@ function RouteComponent() {
         <ThemeToggle />
       </header>
       <Outlet />
+      <GoogleOneTap />
     </div>
   )
 }

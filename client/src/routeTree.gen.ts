@@ -17,6 +17,7 @@ import { Route as NonAuthedIndexImport } from './modules/_nonAuthed/index'
 import { Route as NonAuthedRegisterIndexImport } from './modules/_nonAuthed/register/index'
 import { Route as NonAuthedLoginIndexImport } from './modules/_nonAuthed/login/index'
 import { Route as AuthedProfileIndexImport } from './modules/_authed/profile/index'
+import { Route as AuthedFeedIndexImport } from './modules/_authed/feed/index'
 
 // Create/Update Routes
 
@@ -54,6 +55,12 @@ const AuthedProfileIndexRoute = AuthedProfileIndexImport.update({
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 
+const AuthedFeedIndexRoute = AuthedFeedIndexImport.update({
+  id: '/feed/',
+  path: '/feed/',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -78,6 +85,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof NonAuthedIndexImport
       parentRoute: typeof NonAuthedRouteImport
+    }
+    '/_authed/feed/': {
+      id: '/_authed/feed/'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof AuthedFeedIndexImport
+      parentRoute: typeof AuthedRouteImport
     }
     '/_authed/profile/': {
       id: '/_authed/profile/'
@@ -106,10 +120,12 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthedRouteRouteChildren {
+  AuthedFeedIndexRoute: typeof AuthedFeedIndexRoute
   AuthedProfileIndexRoute: typeof AuthedProfileIndexRoute
 }
 
 const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
+  AuthedFeedIndexRoute: AuthedFeedIndexRoute,
   AuthedProfileIndexRoute: AuthedProfileIndexRoute,
 }
 
@@ -136,6 +152,7 @@ const NonAuthedRouteRouteWithChildren = NonAuthedRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '': typeof NonAuthedRouteRouteWithChildren
   '/': typeof NonAuthedIndexRoute
+  '/feed': typeof AuthedFeedIndexRoute
   '/profile': typeof AuthedProfileIndexRoute
   '/login': typeof NonAuthedLoginIndexRoute
   '/register': typeof NonAuthedRegisterIndexRoute
@@ -144,6 +161,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '': typeof AuthedRouteRouteWithChildren
   '/': typeof NonAuthedIndexRoute
+  '/feed': typeof AuthedFeedIndexRoute
   '/profile': typeof AuthedProfileIndexRoute
   '/login': typeof NonAuthedLoginIndexRoute
   '/register': typeof NonAuthedRegisterIndexRoute
@@ -154,6 +172,7 @@ export interface FileRoutesById {
   '/_authed': typeof AuthedRouteRouteWithChildren
   '/_nonAuthed': typeof NonAuthedRouteRouteWithChildren
   '/_nonAuthed/': typeof NonAuthedIndexRoute
+  '/_authed/feed/': typeof AuthedFeedIndexRoute
   '/_authed/profile/': typeof AuthedProfileIndexRoute
   '/_nonAuthed/login/': typeof NonAuthedLoginIndexRoute
   '/_nonAuthed/register/': typeof NonAuthedRegisterIndexRoute
@@ -161,14 +180,15 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/' | '/profile' | '/login' | '/register'
+  fullPaths: '' | '/' | '/feed' | '/profile' | '/login' | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/' | '/profile' | '/login' | '/register'
+  to: '' | '/' | '/feed' | '/profile' | '/login' | '/register'
   id:
     | '__root__'
     | '/_authed'
     | '/_nonAuthed'
     | '/_nonAuthed/'
+    | '/_authed/feed/'
     | '/_authed/profile/'
     | '/_nonAuthed/login/'
     | '/_nonAuthed/register/'
@@ -202,6 +222,7 @@ export const routeTree = rootRoute
     "/_authed": {
       "filePath": "_authed/route.tsx",
       "children": [
+        "/_authed/feed/",
         "/_authed/profile/"
       ]
     },
@@ -216,6 +237,10 @@ export const routeTree = rootRoute
     "/_nonAuthed/": {
       "filePath": "_nonAuthed/index.tsx",
       "parent": "/_nonAuthed"
+    },
+    "/_authed/feed/": {
+      "filePath": "_authed/feed/index.tsx",
+      "parent": "/_authed"
     },
     "/_authed/profile/": {
       "filePath": "_authed/profile/index.tsx",

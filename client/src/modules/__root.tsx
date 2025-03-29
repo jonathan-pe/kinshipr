@@ -1,9 +1,14 @@
 import { Toaster } from '@/components/ui/sonner'
-import { createRootRoute, Outlet } from '@tanstack/react-router'
+import { UseAuthReturn } from '@clerk/types'
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { Suspense } from 'react'
 
-export const Route = createRootRoute({
+interface RouterWithContext {
+  auth: UseAuthReturn
+}
+
+export const Route = createRootRouteWithContext<RouterWithContext>()({
   component: () => (
     <Suspense fallback={<div className='min-h-screen w-full flex justify-center items-center'>Loading...</div>}>
       <Outlet />

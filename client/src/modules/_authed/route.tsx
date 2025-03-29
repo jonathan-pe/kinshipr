@@ -1,28 +1,42 @@
 // src/modules/_authed/route.tsx
-import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
-import useAuthStore from '@/store/authStore'
-import { useEffect } from 'react'
+import ThemeToggle from '@/components/theme-toggle'
+import { Button } from '@/components/ui/button'
+import { useAuth } from '@clerk/clerk-react'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { LogOutIcon } from 'lucide-react'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/_authed')({
   component: RouteComponent,
+  beforeLoad: async ({ context, location }) => {
+    const { isSignedIn } = context.auth
+
+    if (!isSignedIn) {
+      toast.error('You must be signed in to view this page', { id: 'accessing-protected-page' })
+      throw redirect({
+        to: '/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
 })
 
 function RouteComponent() {
-  const token = useAuthStore((state) => state.token)
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (!token) {
-      navigate({ to: '/login' }) // Redirect to login if no token
-    }
-  }, [token, navigate])
-
-  if (!token) {
-    return null // Don't render outlet if not authenticated
-  }
+  const { signOut } = useAuth()
 
   return (
-    <div className='min-h-screen w-full flex flex-col items-center justify-center mx-auto'>
+    <div className='container min-h-screen flex flex-col items-center justify-center mx-auto'>
+      <header className='flex justify-between items-center w-full p-4'>
+        <h2>kinshipr</h2>
+        <div className='flex items-center space-x-4'>
+          <ThemeToggle />
+          <Button variant='outline' size='icon' onClick={() => signOut()}>
+            <LogOutIcon />
+          </Button>
+        </div>
+      </header>
       <Outlet />
     </div>
   )
