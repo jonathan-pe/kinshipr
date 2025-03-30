@@ -12,8 +12,9 @@
   --neutral-very-light: oklch(0.98 0.003 280);
   --neutral-light: oklch(0.94 0.004 280);
   --neutral-medium: oklch(0.75 0.01 280);
-  --neutral-dark: oklch(0.38 0.005 280);
-  --neutral-very-dark: oklch(0.14 0.005 280);
+  --neutral-dark-medium: oklch(0.45 0.01 280);
+  --neutral-dark: oklch(0.28 0.005 280);
+  --neutral-very-dark: oklch(0.1 0.005 280);
 
   color-scheme: light dark;
   color: oklch(var(--neutral-dark)); /* Dark text on light background */
@@ -38,10 +39,10 @@
   --secondary-foreground: var(--neutral-very-dark);
   --muted: var(--neutral-medium);
   --muted-foreground: var(--neutral-dark);
-  --accent: var(--neutral-medium);
+  --accent: var(--neutral-light);
   --accent-yellow: oklch(0.88 0.18 80);
   --accent-red: oklch(0.6 0.22 28);
-  --accent-foreground: var(--primary);
+  --accent-foreground: var(--neutral-very-dark);
   --destructive: var(--accent-red);
   --border: var(--neutral-medium);
   --input: var(--neutral-medium);
@@ -55,31 +56,20 @@
   --sidebar-foreground: var(--neutral-dark);
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--neutral-white);
-  --sidebar-accent: var(--neutral-very-dark);
-  --sidebar-accent-foreground: var(--primary);
+  --sidebar-accent: var(--neutral-light);
+  --sidebar-accent-foreground: var(--neutral-very-dark);
   --sidebar-border: var(--neutral-very-dark);
   --sidebar-ring: var(--primary);
 }
 
-a {
-  font-weight: 500;
-  color: var(--primary);
-  text-decoration: inherit;
-}
-a:hover {
-  opacity: 0.8;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+@layer base {
+  a {
+    font-weight: 500;
+    color: var(--primary);
+    text-decoration: inherit;
   }
   a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+    opacity: 0.8;
   }
 }
 
@@ -97,12 +87,12 @@ a:hover {
   --secondary-foreground: var(--neutral-very-dark);
   --muted: var(--neutral-dark); /* Use medium dark for muted elements */
   --muted-foreground: var(--neutral-medium);
-  --accent: var(--neutral-dark);
-  --accent-foreground: var(--neutral-medium);
+  --accent: var(--neutral-dark-medium);
+  --accent-foreground: var(--neutral-white);
   --accent-yellow: oklch(0.88 0.18 80);
   --accent-red: oklch(0.6 0.22 28);
   --destructive: var(--accent-red);
-  --border: var(--neutral-dark);
+  --border: var(--neutral-dark-medium);
   --input: var(--neutral-dark); /* Dark input background */
   --ring: var(--primary);
   --chart-1: oklch(0.8 0.15 40);
@@ -110,13 +100,13 @@ a:hover {
   --chart-3: oklch(0.4 0.07 230);
   --chart-4: oklch(0.85 0.18 85);
   --chart-5: oklch(0.8 0.18 70);
-  --sidebar: var(--neutral-very-dark);
+  --sidebar: var(--neutral-dark);
   --sidebar-foreground: var(--neutral-light);
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--neutral-white);
-  --sidebar-accent: var(--neutral-dark);
-  --sidebar-accent-foreground: var(--neutral-medium);
-  --sidebar-border: var(--neutral-dark);
+  --sidebar-accent: var(--neutral-dark-medium);
+  --sidebar-accent-foreground: var(--neutral-white);
+  --sidebar-border: var(--neutral-dark-medium);
   --sidebar-ring: var(--primary);
 }
 

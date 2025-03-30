@@ -1,5 +1,6 @@
 // src/components/ThemeToggle.tsx
 import { Button } from '@/components/ui/button'
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { useTheme } from '@/hooks/useTheme'
 import { Moon, Sun } from 'lucide-react'
 
@@ -11,9 +12,18 @@ const ThemeToggle = () => {
   }
 
   return (
-    <Button variant='outline' size='icon' type='button' onClick={toggleTheme}>
-      {theme === 'light' ? <Moon /> : <Sun />}
-    </Button>
+    <DropdownMenuItem onClick={toggleTheme} className='cursor-pointer'>
+      {theme === 'light' ? (
+        <>
+          <Moon /> Dark Mode
+        </>
+      ) : (
+        <>
+          <Sun /> Light Mode
+        </>
+      )}
+      {}
+    </DropdownMenuItem>
   )
 }
 

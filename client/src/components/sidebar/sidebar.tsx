@@ -19,6 +19,7 @@ import { NavProjects } from '@/components/sidebar/nav-projects'
 import { NavUser } from '@/components/sidebar/nav-user'
 import { TeamSwitcher } from '@/components/sidebar/team-switcher'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar'
+import { useUser } from '@clerk/clerk-react'
 
 // This is sample data.
 const data = {
@@ -151,6 +152,12 @@ const data = {
 }
 
 export function KinshiprSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useUser()
+
+  if (!user) {
+    return null
+  }
+
   return (
     <Sidebar collapsible='icon' {...props}>
       <SidebarHeader>
@@ -161,7 +168,7 @@ export function KinshiprSidebar({ ...props }: React.ComponentProps<typeof Sideba
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
