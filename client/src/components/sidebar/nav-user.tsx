@@ -30,7 +30,7 @@ export function NavUser({ user }: { user: UserResource }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size='lg'
-              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer'
             >
               <Avatar className='h-8 w-8 rounded-lg'>
                 <AvatarImage src={user.imageUrl} />
@@ -74,10 +74,6 @@ export function NavUser({ user }: { user: UserResource }) {
               <DropdownMenuItem className='cursor-pointer' onClick={() => navigate({ to: '/profile' })}>
                 <User />
                 Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem className='cursor-pointer'>
-                <Bell />
-                Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
