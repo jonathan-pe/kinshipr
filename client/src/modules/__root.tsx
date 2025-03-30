@@ -13,7 +13,7 @@ export const Route = createRootRouteWithContext<RouterWithContext>()({
     <Suspense fallback={<div className='min-h-screen w-full flex justify-center items-center'>Loading...</div>}>
       <Outlet />
       <Toaster richColors />
-      <TanStackRouterDevtools />
+      <TanStackRouterDevtools position='bottom-right' />
     </Suspense>
   ),
   notFoundComponent: () => <div className='min-h-screen w-full flex justify-center items-center'>404 Not Found</div>,

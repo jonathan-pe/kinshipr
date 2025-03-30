@@ -1,10 +1,8 @@
 // src/modules/_authed/route.tsx
-import ThemeToggle from '@/components/theme-toggle'
-import { Button } from '@/components/ui/button'
-import { useAuth } from '@clerk/clerk-react'
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
-import { LogOutIcon } from 'lucide-react'
 import { toast } from 'sonner'
+import { KinshiprSidebar } from '@/components/sidebar/sidebar'
 
 export const Route = createFileRoute('/_authed')({
   component: RouteComponent,
@@ -24,20 +22,14 @@ export const Route = createFileRoute('/_authed')({
 })
 
 function RouteComponent() {
-  const { signOut } = useAuth()
-
   return (
-    <div className='container min-h-screen flex flex-col items-center justify-center mx-auto'>
-      <header className='flex justify-between items-center w-full p-4'>
-        <h2>kinshipr</h2>
-        <div className='flex items-center space-x-4'>
-          <ThemeToggle />
-          <Button variant='outline' size='icon' onClick={() => signOut()}>
-            <LogOutIcon />
-          </Button>
+    <SidebarProvider>
+      <KinshiprSidebar />
+      <SidebarInset>
+        <div className='container min-h-screen flex flex-col items-center justify-center mx-auto'>
+          <Outlet />
         </div>
-      </header>
-      <Outlet />
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
