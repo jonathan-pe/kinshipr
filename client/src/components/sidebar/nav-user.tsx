@@ -1,6 +1,6 @@
 'use client'
 
-import { Bell, ChevronsUpDown, LogOut, UserCog } from 'lucide-react'
+import { Bell, ChevronsUpDown, LogOut, User, UserCog } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -16,10 +16,12 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/c
 import { UserResource } from '@clerk/types'
 import ThemeToggle from '@/components/sidebar/theme-toggle'
 import { useAuth } from '@clerk/clerk-react'
+import { useNavigate } from '@tanstack/react-router'
 
 export function NavUser({ user }: { user: UserResource }) {
   const { isMobile } = useSidebar()
   const { signOut } = useAuth()
+  const navigate = useNavigate()
 
   return (
     <SidebarMenu>
@@ -69,9 +71,9 @@ export function NavUser({ user }: { user: UserResource }) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className='cursor-pointer'>
-                <UserCog />
-                Account
+              <DropdownMenuItem className='cursor-pointer' onClick={() => navigate({ to: '/profile' })}>
+                <User />
+                Profile
               </DropdownMenuItem>
               <DropdownMenuItem className='cursor-pointer'>
                 <Bell />

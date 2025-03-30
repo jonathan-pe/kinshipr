@@ -1,3 +1,4 @@
+import { MAIN_HOME_URL } from '@/constants'
 import { GoogleOneTap } from '@clerk/clerk-react'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
@@ -6,7 +7,7 @@ export const Route = createFileRoute('/_nonAuthed')({
     const { isSignedIn } = context.auth
 
     if (isSignedIn) {
-      throw redirect({ to: '/profile' })
+      throw redirect({ to: MAIN_HOME_URL })
     }
   },
   component: RouteComponent,
