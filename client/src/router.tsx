@@ -1,14 +1,14 @@
 import NotFound from '@/components/not-found'
+import Pending from '@/components/pending'
 import { routeTree } from '@/routeTree.gen'
 import { useUser } from '@clerk/clerk-react'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
-import { LoaderCircle } from 'lucide-react'
 
 const router = createRouter({
   routeTree,
   context: { user: undefined! },
   defaultNotFoundComponent: () => <NotFound />,
-  defaultPendingComponent: () => <LoaderCircle className='animate-spin' />,
+  defaultPendingComponent: () => <Pending />,
 })
 
 declare module '@tanstack/react-router' {
@@ -21,11 +21,7 @@ export default function Router() {
   const user = useUser()
 
   if (!user || !user.isLoaded) {
-    return (
-      <div className='min-h-screen w-full flex justify-center items-center'>
-        <LoaderCircle className='animate-spin' />
-      </div>
-    )
+    return <Pending />
   }
 
   return <RouterProvider router={router} context={{ user }} />

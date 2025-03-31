@@ -16,7 +16,7 @@ export function KinshiprSidebar({ ...props }: React.ComponentProps<typeof Sideba
   }
 
   return (
-    <Sidebar collapsible='icon' {...props}>
+    <Sidebar {...props}>
       <SidebarHeader className='flex flex-row items-center justify-between'>
         <NavLogo />
       </SidebarHeader>
