@@ -1,6 +1,6 @@
 import Header from '@/components/header'
 import NotFound from '@/components/not-found'
-import { KinshiprSidebar } from '@/components/sidebar/kinshipr-sidebar'
+import { KinshiprSidebar } from '@/components/kinshipr-sidebar/kinshipr-sidebar'
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
 import { Toaster } from '@/components/ui/sonner'
 import { useAuth } from '@clerk/clerk-react'

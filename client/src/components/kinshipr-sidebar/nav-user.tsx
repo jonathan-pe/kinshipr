@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
 import { UserResource } from '@clerk/types'
-import ThemeToggle from '@/components/sidebar/theme-toggle'
+import ThemeToggle from '@/components/kinshipr-sidebar/theme-toggle'
 import { useAuth } from '@clerk/clerk-react'
 import { useNavigate } from '@tanstack/react-router'
 

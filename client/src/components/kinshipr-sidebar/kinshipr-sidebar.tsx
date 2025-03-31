@@ -2,11 +2,11 @@
 
 import * as React from 'react'
 
-import NavModules from '@/components/sidebar/nav-modules'
-import { NavUser } from '@/components/sidebar/nav-user'
+import NavModules from '@/components/kinshipr-sidebar/nav-modules'
+import { NavUser } from '@/components/kinshipr-sidebar/nav-user'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar'
 import { useUser } from '@clerk/clerk-react'
-import NavLogo from '@/components/sidebar/nav-logo'
+import NavLogo from '@/components/kinshipr-sidebar/nav-logo'
 
 export function KinshiprSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useUser()
