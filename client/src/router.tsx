@@ -1,9 +1,15 @@
+import NotFound from '@/components/not-found'
 import { routeTree } from '@/routeTree.gen'
 import { useAuth } from '@clerk/clerk-react'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { LoaderCircle } from 'lucide-react'
 
-const router = createRouter({ routeTree, context: { auth: undefined! } })
+const router = createRouter({
+  routeTree,
+  context: { auth: undefined! },
+  defaultNotFoundComponent: () => <NotFound />,
+  defaultPendingComponent: () => <LoaderCircle className='animate-spin' />,
+})
 
 declare module '@tanstack/react-router' {
   interface Register {

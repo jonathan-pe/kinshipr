@@ -5,7 +5,7 @@ import { Link } from '@tanstack/react-router'
 export default function NavLogo() {
   const { open } = useSidebar()
   return (
-    <Link to='/feed' className='flex items-center space-x-2 justify-center'>
+    <Link to='/' className='flex items-center space-x-2 justify-center'>
       <KinshiprLogo />
       {open && <h4>kinshipr</h4>}
     </Link>

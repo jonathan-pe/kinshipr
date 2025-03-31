@@ -1,1 +1,1 @@
-export const MAIN_HOME_URL = '/feed'
+export const MAIN_HOME_URL = '/'

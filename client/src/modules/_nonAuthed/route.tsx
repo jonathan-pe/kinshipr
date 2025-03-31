@@ -15,9 +15,9 @@ export const Route = createFileRoute('/_nonAuthed')({
 
 function RouteComponent() {
   return (
-    <div className='container min-h-screen flex flex-col items-center justify-center mx-auto'>
+    <>
       <Outlet />
       <GoogleOneTap />
-    </div>
+    </>
   )
 }

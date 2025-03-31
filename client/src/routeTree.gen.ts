@@ -13,12 +13,12 @@
 import { Route as rootRoute } from './modules/__root'
 import { Route as NonAuthedRouteImport } from './modules/_nonAuthed/route'
 import { Route as AuthedRouteImport } from './modules/_authed/route'
-import { Route as NonAuthedIndexImport } from './modules/_nonAuthed/index'
+import { Route as HomeIndexImport } from './modules/_home/index'
 import { Route as NonAuthedRegisterIndexImport } from './modules/_nonAuthed/register/index'
 import { Route as NonAuthedLoginIndexImport } from './modules/_nonAuthed/login/index'
 import { Route as AuthedProfileIndexImport } from './modules/_authed/profile/index'
-import { Route as AuthedFeedIndexImport } from './modules/_authed/feed/index'
 import { Route as NonAuthedLoginSsoCallbackImport } from './modules/_nonAuthed/login/sso-callback'
+import { Route as AuthedProfileUsernameImport } from './modules/_authed/profile/$username'
 
 // Create/Update Routes
 
@@ -32,10 +32,10 @@ const AuthedRouteRoute = AuthedRouteImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const NonAuthedIndexRoute = NonAuthedIndexImport.update({
-  id: '/',
+const HomeIndexRoute = HomeIndexImport.update({
+  id: '/_home/',
   path: '/',
-  getParentRoute: () => NonAuthedRouteRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
 const NonAuthedRegisterIndexRoute = NonAuthedRegisterIndexImport.update({
@@ -56,16 +56,16 @@ const AuthedProfileIndexRoute = AuthedProfileIndexImport.update({
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 
-const AuthedFeedIndexRoute = AuthedFeedIndexImport.update({
-  id: '/feed/',
-  path: '/feed/',
-  getParentRoute: () => AuthedRouteRoute,
-} as any)
-
 const NonAuthedLoginSsoCallbackRoute = NonAuthedLoginSsoCallbackImport.update({
   id: '/login/sso-callback',
   path: '/login/sso-callback',
   getParentRoute: () => NonAuthedRouteRoute,
+} as any)
+
+const AuthedProfileUsernameRoute = AuthedProfileUsernameImport.update({
+  id: '/profile/$username',
+  path: '/profile/$username',
+  getParentRoute: () => AuthedRouteRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -86,12 +86,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NonAuthedRouteImport
       parentRoute: typeof rootRoute
     }
-    '/_nonAuthed/': {
-      id: '/_nonAuthed/'
+    '/_home/': {
+      id: '/_home/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof NonAuthedIndexImport
-      parentRoute: typeof NonAuthedRouteImport
+      preLoaderRoute: typeof HomeIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/_authed/profile/$username': {
+      id: '/_authed/profile/$username'
+      path: '/profile/$username'
+      fullPath: '/profile/$username'
+      preLoaderRoute: typeof AuthedProfileUsernameImport
+      parentRoute: typeof AuthedRouteImport
     }
     '/_nonAuthed/login/sso-callback': {
       id: '/_nonAuthed/login/sso-callback'
@@ -99,13 +106,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/login/sso-callback'
       preLoaderRoute: typeof NonAuthedLoginSsoCallbackImport
       parentRoute: typeof NonAuthedRouteImport
-    }
-    '/_authed/feed/': {
-      id: '/_authed/feed/'
-      path: '/feed'
-      fullPath: '/feed'
-      preLoaderRoute: typeof AuthedFeedIndexImport
-      parentRoute: typeof AuthedRouteImport
     }
     '/_authed/profile/': {
       id: '/_authed/profile/'
@@ -134,12 +134,12 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthedRouteRouteChildren {
-  AuthedFeedIndexRoute: typeof AuthedFeedIndexRoute
+  AuthedProfileUsernameRoute: typeof AuthedProfileUsernameRoute
   AuthedProfileIndexRoute: typeof AuthedProfileIndexRoute
 }
 
 const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
-  AuthedFeedIndexRoute: AuthedFeedIndexRoute,
+  AuthedProfileUsernameRoute: AuthedProfileUsernameRoute,
   AuthedProfileIndexRoute: AuthedProfileIndexRoute,
 }
 
@@ -148,14 +148,12 @@ const AuthedRouteRouteWithChildren = AuthedRouteRoute._addFileChildren(
 )
 
 interface NonAuthedRouteRouteChildren {
-  NonAuthedIndexRoute: typeof NonAuthedIndexRoute
   NonAuthedLoginSsoCallbackRoute: typeof NonAuthedLoginSsoCallbackRoute
   NonAuthedLoginIndexRoute: typeof NonAuthedLoginIndexRoute
   NonAuthedRegisterIndexRoute: typeof NonAuthedRegisterIndexRoute
 }
 
 const NonAuthedRouteRouteChildren: NonAuthedRouteRouteChildren = {
-  NonAuthedIndexRoute: NonAuthedIndexRoute,
   NonAuthedLoginSsoCallbackRoute: NonAuthedLoginSsoCallbackRoute,
   NonAuthedLoginIndexRoute: NonAuthedLoginIndexRoute,
   NonAuthedRegisterIndexRoute: NonAuthedRegisterIndexRoute,
@@ -167,19 +165,19 @@ const NonAuthedRouteRouteWithChildren = NonAuthedRouteRoute._addFileChildren(
 
 export interface FileRoutesByFullPath {
   '': typeof NonAuthedRouteRouteWithChildren
-  '/': typeof NonAuthedIndexRoute
+  '/': typeof HomeIndexRoute
+  '/profile/$username': typeof AuthedProfileUsernameRoute
   '/login/sso-callback': typeof NonAuthedLoginSsoCallbackRoute
-  '/feed': typeof AuthedFeedIndexRoute
   '/profile': typeof AuthedProfileIndexRoute
   '/login': typeof NonAuthedLoginIndexRoute
   '/register': typeof NonAuthedRegisterIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '': typeof AuthedRouteRouteWithChildren
-  '/': typeof NonAuthedIndexRoute
+  '': typeof NonAuthedRouteRouteWithChildren
+  '/': typeof HomeIndexRoute
+  '/profile/$username': typeof AuthedProfileUsernameRoute
   '/login/sso-callback': typeof NonAuthedLoginSsoCallbackRoute
-  '/feed': typeof AuthedFeedIndexRoute
   '/profile': typeof AuthedProfileIndexRoute
   '/login': typeof NonAuthedLoginIndexRoute
   '/register': typeof NonAuthedRegisterIndexRoute
@@ -189,9 +187,9 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_authed': typeof AuthedRouteRouteWithChildren
   '/_nonAuthed': typeof NonAuthedRouteRouteWithChildren
-  '/_nonAuthed/': typeof NonAuthedIndexRoute
+  '/_home/': typeof HomeIndexRoute
+  '/_authed/profile/$username': typeof AuthedProfileUsernameRoute
   '/_nonAuthed/login/sso-callback': typeof NonAuthedLoginSsoCallbackRoute
-  '/_authed/feed/': typeof AuthedFeedIndexRoute
   '/_authed/profile/': typeof AuthedProfileIndexRoute
   '/_nonAuthed/login/': typeof NonAuthedLoginIndexRoute
   '/_nonAuthed/register/': typeof NonAuthedRegisterIndexRoute
@@ -202,8 +200,8 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/'
+    | '/profile/$username'
     | '/login/sso-callback'
-    | '/feed'
     | '/profile'
     | '/login'
     | '/register'
@@ -211,8 +209,8 @@ export interface FileRouteTypes {
   to:
     | ''
     | '/'
+    | '/profile/$username'
     | '/login/sso-callback'
-    | '/feed'
     | '/profile'
     | '/login'
     | '/register'
@@ -220,9 +218,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_authed'
     | '/_nonAuthed'
-    | '/_nonAuthed/'
+    | '/_home/'
+    | '/_authed/profile/$username'
     | '/_nonAuthed/login/sso-callback'
-    | '/_authed/feed/'
     | '/_authed/profile/'
     | '/_nonAuthed/login/'
     | '/_nonAuthed/register/'
@@ -232,11 +230,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthedRouteRoute: typeof AuthedRouteRouteWithChildren
   NonAuthedRouteRoute: typeof NonAuthedRouteRouteWithChildren
+  HomeIndexRoute: typeof HomeIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AuthedRouteRoute: AuthedRouteRouteWithChildren,
   NonAuthedRouteRoute: NonAuthedRouteRouteWithChildren,
+  HomeIndexRoute: HomeIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -250,36 +250,35 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_authed",
-        "/_nonAuthed"
+        "/_nonAuthed",
+        "/_home/"
       ]
     },
     "/_authed": {
       "filePath": "_authed/route.tsx",
       "children": [
-        "/_authed/feed/",
+        "/_authed/profile/$username",
         "/_authed/profile/"
       ]
     },
     "/_nonAuthed": {
       "filePath": "_nonAuthed/route.tsx",
       "children": [
-        "/_nonAuthed/",
         "/_nonAuthed/login/sso-callback",
         "/_nonAuthed/login/",
         "/_nonAuthed/register/"
       ]
     },
-    "/_nonAuthed/": {
-      "filePath": "_nonAuthed/index.tsx",
-      "parent": "/_nonAuthed"
+    "/_home/": {
+      "filePath": "_home/index.tsx"
+    },
+    "/_authed/profile/$username": {
+      "filePath": "_authed/profile/$username.tsx",
+      "parent": "/_authed"
     },
     "/_nonAuthed/login/sso-callback": {
       "filePath": "_nonAuthed/login/sso-callback.tsx",
       "parent": "/_nonAuthed"
-    },
-    "/_authed/feed/": {
-      "filePath": "_authed/feed/index.tsx",
-      "parent": "/_authed"
     },
     "/_authed/profile/": {
       "filePath": "_authed/profile/index.tsx",
