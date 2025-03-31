@@ -9,9 +9,5 @@ export const Route = createFileRoute('/_authed/profile/')({
 })
 
 function Profile() {
-  return (
-    <div className='max-w-7xl flex flex-1 flex-col items-center justify-center space-y-4'>
-      <Outlet />
-    </div>
-  )
+  return <Outlet />
 }
