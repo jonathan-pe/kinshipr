@@ -3,12 +3,12 @@ import { KinshiprSidebar } from '@/components/sidebar/sidebar'
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
 import { Toaster } from '@/components/ui/sonner'
 import { useAuth } from '@clerk/clerk-react'
-import { UseAuthReturn } from '@clerk/types'
+import { UseUserReturn } from '@clerk/types'
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 interface RouterWithContext {
-  auth: UseAuthReturn
+  user: UseUserReturn
 }
 
 export const Route = createRootRouteWithContext<RouterWithContext>()({

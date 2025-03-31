@@ -4,7 +4,7 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_nonAuthed')({
   beforeLoad: ({ context }) => {
-    const { isSignedIn } = context.auth
+    const { isSignedIn } = context.user
 
     if (isSignedIn) {
       throw redirect({ to: MAIN_HOME_URL })
