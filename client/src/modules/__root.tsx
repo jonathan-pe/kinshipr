@@ -25,7 +25,7 @@ function Home() {
       {isSignedIn && <KinshiprSidebar />}
       <SidebarInset>
         <div className='flex flex-1 flex-col'>
-          <Header />
+          {isSignedIn && <Header />}
           <Outlet />
         </div>
       </SidebarInset>
