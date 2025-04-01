@@ -9,6 +9,7 @@ import { clerkMiddleware, requireAuth } from '@clerk/express'
 
 import userRoutes from '@/routes/users'
 import profileRoutes from '@/routes/userProfiles'
+import clerkRoutes from '@/routes/clerk'
 
 dotenv.config()
 
@@ -37,6 +38,7 @@ app.get('/healthcheck', (req, res) => {
 app.use(requireAuth())
 app.use('/users', userRoutes)
 app.use('/profile', profileRoutes)
+app.use('/clerk', clerkRoutes)
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
