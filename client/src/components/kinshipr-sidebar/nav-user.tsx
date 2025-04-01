@@ -71,10 +71,7 @@ export function NavUser({ user }: { user: UserResource }) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem
-                className='cursor-pointer'
-                onClick={() => navigate({ to: `/profile/${user.username}` })}
-              >
+              <DropdownMenuItem className='cursor-pointer' onClick={() => navigate({ to: `/profile` })}>
                 <User />
                 Profile
               </DropdownMenuItem>

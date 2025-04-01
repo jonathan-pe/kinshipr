@@ -17,6 +17,7 @@ import { Route as HomeIndexImport } from './modules/_home/index'
 import { Route as NonAuthedRegisterRouteImport } from './modules/_nonAuthed/register/route'
 import { Route as NonAuthedLoginRouteImport } from './modules/_nonAuthed/login/route'
 import { Route as AuthedProfileRouteImport } from './modules/_authed/profile/route'
+import { Route as AuthedProfileIndexImport } from './modules/_authed/profile/index'
 import { Route as NonAuthedLoginSsoCallbackImport } from './modules/_nonAuthed/login/sso-callback'
 import { Route as AuthedProfileUsernameImport } from './modules/_authed/profile/$username'
 
@@ -54,6 +55,12 @@ const AuthedProfileRouteRoute = AuthedProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
   getParentRoute: () => AuthedRouteRoute,
+} as any)
+
+const AuthedProfileIndexRoute = AuthedProfileIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthedProfileRouteRoute,
 } as any)
 
 const NonAuthedLoginSsoCallbackRoute = NonAuthedLoginSsoCallbackImport.update({
@@ -128,6 +135,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NonAuthedLoginSsoCallbackImport
       parentRoute: typeof NonAuthedLoginRouteImport
     }
+    '/_authed/profile/': {
+      id: '/_authed/profile/'
+      path: '/'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof AuthedProfileIndexImport
+      parentRoute: typeof AuthedProfileRouteImport
+    }
   }
 }
 
@@ -135,10 +149,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthedProfileRouteRouteChildren {
   AuthedProfileUsernameRoute: typeof AuthedProfileUsernameRoute
+  AuthedProfileIndexRoute: typeof AuthedProfileIndexRoute
 }
 
 const AuthedProfileRouteRouteChildren: AuthedProfileRouteRouteChildren = {
   AuthedProfileUsernameRoute: AuthedProfileUsernameRoute,
+  AuthedProfileIndexRoute: AuthedProfileIndexRoute,
 }
 
 const AuthedProfileRouteRouteWithChildren =
@@ -189,16 +205,17 @@ export interface FileRoutesByFullPath {
   '/': typeof HomeIndexRoute
   '/profile/$username': typeof AuthedProfileUsernameRoute
   '/login/sso-callback': typeof NonAuthedLoginSsoCallbackRoute
+  '/profile/': typeof AuthedProfileIndexRoute
 }
 
 export interface FileRoutesByTo {
   '': typeof NonAuthedRouteRouteWithChildren
-  '/profile': typeof AuthedProfileRouteRouteWithChildren
   '/login': typeof NonAuthedLoginRouteRouteWithChildren
   '/register': typeof NonAuthedRegisterRouteRoute
   '/': typeof HomeIndexRoute
   '/profile/$username': typeof AuthedProfileUsernameRoute
   '/login/sso-callback': typeof NonAuthedLoginSsoCallbackRoute
+  '/profile': typeof AuthedProfileIndexRoute
 }
 
 export interface FileRoutesById {
@@ -211,6 +228,7 @@ export interface FileRoutesById {
   '/_home/': typeof HomeIndexRoute
   '/_authed/profile/$username': typeof AuthedProfileUsernameRoute
   '/_nonAuthed/login/sso-callback': typeof NonAuthedLoginSsoCallbackRoute
+  '/_authed/profile/': typeof AuthedProfileIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -223,15 +241,16 @@ export interface FileRouteTypes {
     | '/'
     | '/profile/$username'
     | '/login/sso-callback'
+    | '/profile/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
-    | '/profile'
     | '/login'
     | '/register'
     | '/'
     | '/profile/$username'
     | '/login/sso-callback'
+    | '/profile'
   id:
     | '__root__'
     | '/_authed'
@@ -242,6 +261,7 @@ export interface FileRouteTypes {
     | '/_home/'
     | '/_authed/profile/$username'
     | '/_nonAuthed/login/sso-callback'
+    | '/_authed/profile/'
   fileRoutesById: FileRoutesById
 }
 
@@ -289,7 +309,8 @@ export const routeTree = rootRoute
       "filePath": "_authed/profile/route.tsx",
       "parent": "/_authed",
       "children": [
-        "/_authed/profile/$username"
+        "/_authed/profile/$username",
+        "/_authed/profile/"
       ]
     },
     "/_nonAuthed/login": {
@@ -313,6 +334,10 @@ export const routeTree = rootRoute
     "/_nonAuthed/login/sso-callback": {
       "filePath": "_nonAuthed/login/sso-callback.tsx",
       "parent": "/_nonAuthed/login"
+    },
+    "/_authed/profile/": {
+      "filePath": "_authed/profile/index.tsx",
+      "parent": "/_authed/profile"
     }
   }
 }
