@@ -4,7 +4,7 @@ import { RegisterForm } from '@/modules/_nonAuthed/register/-register-form'
 import { useState } from 'react'
 import { VerifyForm } from '@/modules/_nonAuthed/register/-verify-form'
 
-export const Route = createFileRoute('/_nonAuthed/register/')({ component: Register })
+export const Route = createFileRoute('/_nonAuthed/register')({ component: Register })
 
 function Register() {
   const [verifying, setVerifying] = useState(false)
