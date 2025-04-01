@@ -1,13 +1,9 @@
-// src/modules/login/Login.tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { LoginForm } from '@/modules/_nonAuthed/login/-login-form'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_nonAuthed/login')({ component: Login })
+export const Route = createFileRoute('/_nonAuthed/login')({
+  component: RouteComponent,
+})
 
-function Login() {
-  return (
-    <div className='flex flex-1 flex-col items-center justify-center space-y-8'>
-      <LoginForm />
-    </div>
-  )
+function RouteComponent() {
+  return <Outlet />
 }
