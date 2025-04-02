@@ -5,6 +5,7 @@ import UserProfile from '@/models/UserProfile'
 import type { WebhookEvent, UserJSON as ClerkUserJSON } from '@clerk/express'
 import { Webhook } from 'svix'
 import { adjectives, animals, NumberDictionary, uniqueNamesGenerator } from 'unique-names-generator'
+import { createProfileFromClerkWebhook } from '@/controllers/userProfiles'
 
 export const getUser = async (req: Request, res: Response) => {
   try {
@@ -155,8 +156,5 @@ const createUserFromClerkWebhook = async (clerkUser: ClerkUserJSON): Promise<voi
   }
 
   // Create the user profile
-  await UserProfile.create({
-    userId: id,
-    username: username ?? generatedUsername,
-  })
+  await createProfileFromClerkWebhook(id, username ?? generatedUsername)
 }

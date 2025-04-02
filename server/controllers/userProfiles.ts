@@ -1,7 +1,6 @@
 // src/controllers/userProfiles.ts
 import { Request, Response } from 'express'
 import UserProfile from '@/models/UserProfile'
-import User from '@/models/User'
 import { GoogleCloudStorageService, storageService } from '@/services/storage'
 
 export const getProfile = async (req: Request, res: Response) => {
@@ -65,3 +64,16 @@ export const uploadProfilePicture = [
     }
   },
 ]
+
+// Clerk Webhook functionality
+export const createProfileFromClerkWebhook = async (id: string, username: string) => {
+  try {
+    await UserProfile.create({
+      userId: id,
+      username: username,
+    })
+  } catch (error) {
+    console.error('Error creating user profile:', error)
+    throw new Error('Failed to create user profile')
+  }
+}
