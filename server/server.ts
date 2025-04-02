@@ -35,9 +35,8 @@ app.get('/healthcheck', (req, res) => {
 })
 
 // Routes
-app.use(requireAuth())
-app.use('/users', userRoutes)
-app.use('/profile', profileRoutes)
+app.use('/users', requireAuth(), userRoutes)
+app.use('/profile', requireAuth(), profileRoutes)
 app.use('/clerk', clerkRoutes)
 
 app.listen(port, () => {

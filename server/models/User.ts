@@ -13,7 +13,7 @@ const UserSchema: Schema = new Schema(
     userId: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     isBlocked: { type: Boolean, default: false },
-    isActive: { type: Boolean, default: true },
+    isActive: { type: Boolean },
   },
   { timestamps: true } // Automatically manage createdAt and updatedAt fields
 )
