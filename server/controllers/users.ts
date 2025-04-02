@@ -4,6 +4,7 @@ import User from '../models/User'
 import UserProfile from '@/models/UserProfile'
 import type { WebhookEvent, UserJSON as ClerkUserJSON } from '@clerk/express'
 import { Webhook } from 'svix'
+import { adjectives, animals, NumberDictionary, uniqueNamesGenerator } from 'unique-names-generator'
 
 export const getUser = async (req: Request, res: Response) => {
   try {
@@ -114,14 +115,48 @@ const createUserFromClerkWebhook = async (clerkUser: ClerkUserJSON): Promise<voi
   const existing = await User.findOne({ clerkId: id })
   if (existing) return
 
-  const user = await User.create({
+  // Create user record first
+  await User.create({
     userId: id,
     email: email_addresses[0]?.email_address,
     isBlocked: false,
   })
 
+  // Try to generate a unique username
+  let generatedUsername
+  let attempts = 0
+  const MAX_ATTEMPTS = 10
+
+  while (!generatedUsername && attempts < MAX_ATTEMPTS) {
+    const candidate = uniqueNamesGenerator({
+      dictionaries: [adjectives, animals, NumberDictionary.generate({ min: 1, max: 100000 })],
+      separator: '',
+      length: 3,
+      style: 'capital',
+    })
+
+    const existingProfile = await UserProfile.findOne({ username: candidate })
+    if (!existingProfile) {
+      generatedUsername = candidate
+    }
+
+    attempts++
+  }
+
+  if (!generatedUsername) {
+    // Roll back the User doc (optional but clean)
+    await User.deleteOne({ userId: id })
+
+    // Optional: log it somewhere, alert Slack, etc.
+    console.error(`Failed to generate username for userId=${id}`)
+
+    // Throw to let Clerk know the webhook failed (it will retry)
+    throw new Error('Username generation failed; webhook will retry.')
+  }
+
+  // Create the user profile
   await UserProfile.create({
     userId: id,
-    username: username,
+    username: username ?? generatedUsername,
   })
 }
