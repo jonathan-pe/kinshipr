@@ -26,7 +26,7 @@ const RegisterFormSchema = z
       .regex(/^[a-zA-Z0-9_\-.]+$/, { message: 'Username can only contain letters, numbers, and "_", "-", or "."' })
       .nonempty({ message: 'Username is required' })
       .min(3, { message: 'Username must be at least 3 characters' })
-      .max(30, { message: 'Username must be at most 20 characters' }),
+      .max(30, { message: 'Username must be at most 30 characters' }),
     email: z.string().nonempty({ message: 'Email is required' }).email({ message: 'Invalid email address' }),
     password: z
       .string()
