@@ -93,7 +93,7 @@
   --accent-red: oklch(0.6 0.22 28);
   --destructive: var(--accent-red);
   --border: var(--neutral-dark-medium);
-  --input: var(--neutral-dark); /* Dark input background */
+  --input: var(--neutral-dark-medium); /* Dark input background */
   --ring: var(--primary);
   --chart-1: oklch(0.8 0.15 40);
   --chart-2: oklch(0.8 0.1 180);
