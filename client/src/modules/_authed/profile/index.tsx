@@ -17,13 +17,13 @@ function RouteComponent() {
   if (error) return <div className='flex flex-1 m-4'>Error retrieving profile data. Please try again</div>
   if (!data) return <div className='flex flex-1 m-4'>Profile data not found</div>
 
-  const { username, imageUrl, displayName } = data
+  const { username, profilePictureUrl, displayName } = data
 
   return (
     <div className='flex flex-col flex-1 m-4 gap-4'>
       <header className='flex items-center gap-4'>
         <Avatar className='h-40 w-40 rounded-full'>
-          <AvatarImage src={imageUrl} />
+          <AvatarImage src={profilePictureUrl} />
           <AvatarFallback className='rounded-full'>
             <User size={100} />
             <span className='sr-only'>{`${displayName || username}'s profile picture`}</span>

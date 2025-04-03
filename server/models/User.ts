@@ -15,7 +15,23 @@ const UserSchema: Schema = new Schema(
     isBlocked: { type: Boolean, default: false },
     isActive: { type: Boolean },
   },
-  { timestamps: true } // Automatically manage createdAt and updatedAt fields
+  {
+    timestamps: true, // Automatically manage createdAt and updatedAt fields
+    toJSON: {
+      versionKey: false,
+      transform: (doc, ret) => {
+        delete ret._id
+        return ret
+      },
+    },
+    toObject: {
+      versionKey: false,
+      transform: (doc, ret) => {
+        delete ret._id
+        return ret
+      },
+    },
+  }
 )
 
 export default mongoose.model<IUser>('User', UserSchema)
