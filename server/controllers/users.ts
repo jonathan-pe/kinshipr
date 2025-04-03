@@ -160,7 +160,7 @@ const createUserFromClerkWebhook = async (clerkUser: ClerkUserJSON): Promise<voi
   }
 
   // Create the user profile
-  await createProfileFromClerkWebhook(id, username ?? generatedUsername)
+  await createProfileFromClerkWebhook(clerkUser, username ?? generatedUsername)
 }
 
 const deleteUserFromClerkWebhook = async (clerkUser: DeletedObjectJSON): Promise<void> => {

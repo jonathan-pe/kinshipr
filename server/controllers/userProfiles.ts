@@ -2,6 +2,7 @@
 import { Request, Response } from 'express'
 import UserProfile from '@/models/UserProfile'
 import { GoogleCloudStorageService, storageService } from '@/services/storage'
+import type { UserJSON as ClerkUserJSON } from '@clerk/express'
 
 export const getProfile = async (req: Request, res: Response) => {
   try {
@@ -66,11 +67,14 @@ export const uploadProfilePicture = [
 ]
 
 // Clerk Webhook functionality
-export const createProfileFromClerkWebhook = async (id: string, username: string) => {
+export const createProfileFromClerkWebhook = async (clerkUser: ClerkUserJSON, generatedUsername: string) => {
+  const { id, username, image_url } = clerkUser
+
   try {
     await UserProfile.create({
       userId: id,
-      username: username,
+      username: username ?? generatedUsername,
+      profilePictureUrl: image_url,
     })
   } catch (error) {
     console.error('Error creating user profile:', error)
