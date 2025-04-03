@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAuth, UserProfile } from '@clerk/clerk-react'
 import { createFileRoute } from '@tanstack/react-router'
 import { User } from 'lucide-react'
+import { dark } from '@clerk/themes'
+import { useTheme } from '@/hooks/useTheme'
 
 export const Route = createFileRoute('/_authed/profile/')({
   component: RouteComponent,
@@ -13,6 +15,7 @@ export const Route = createFileRoute('/_authed/profile/')({
 function RouteComponent() {
   const { userId } = useAuth()
   const { data, isLoading, error } = useUserProfile(userId ?? '')
+  const { theme } = useTheme()
 
   if (isLoading) return <Pending />
   if (error) return <div className='flex flex-1 m-4'>Error retrieving profile data. Please try again</div>
@@ -54,7 +57,7 @@ function RouteComponent() {
           </div>
         </TabsContent>
         <TabsContent value='account' className='flex flex-col mt-4 justify-center items-center'>
-          <UserProfile />
+          <UserProfile appearance={{ baseTheme: theme === 'dark' ? dark : undefined }} />
         </TabsContent>
       </Tabs>
     </div>
