@@ -4,7 +4,7 @@ import * as React from 'react'
 
 import NavModules from '@/components/kinshipr-sidebar/nav-modules'
 import { NavUser } from '@/components/kinshipr-sidebar/nav-user'
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar'
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/components/ui/sidebar'
 import { useUser } from '@clerk/clerk-react'
 import NavLogo from '@/components/kinshipr-sidebar/nav-logo'
 
@@ -28,8 +28,6 @@ export function KinshiprSidebar({ ...props }: React.ComponentProps<typeof Sideba
       <SidebarFooter>
         <NavUser user={user} />
       </SidebarFooter>
-
-      <SidebarRail />
     </Sidebar>
   )
 }
