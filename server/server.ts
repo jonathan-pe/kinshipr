@@ -5,18 +5,29 @@ import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import dotenv from 'dotenv'
-import { clerkMiddleware, requireAuth } from '@clerk/express'
+import { clerkMiddleware } from '@clerk/express'
 
 import userRoutes from '@/routes/users'
 import profileRoutes from '@/routes/userProfiles'
 import clerkRoutes from '@/routes/clerk'
+import { checkAuth } from '@/middleware/checkAuth'
 
 dotenv.config()
 
 const app = express()
 const port = process.env.PORT || 4000
 
-app.use(cors())
+// Might need to include Clerk's webhooks URL in the allowed origins
+const DEV_ALLOWED_ORIGINS = ['http://localhost:5173', 'https://your-production-url.com']
+
+const PROD_ALLOWED_ORIGINS = ['https://your-production-url.com']
+
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.NODE_ENV === 'production' ? PROD_ALLOWED_ORIGINS : DEV_ALLOWED_ORIGINS,
+  })
+)
 app.use(bodyParser.json())
 app.use(clerkMiddleware())
 
@@ -35,8 +46,8 @@ app.get('/healthcheck', (req, res) => {
 })
 
 // Routes
-app.use('/users', requireAuth(), userRoutes)
-app.use('/profile', requireAuth(), profileRoutes)
+app.use('/users', checkAuth, userRoutes)
+app.use('/profiles', checkAuth, profileRoutes)
 app.use('/clerk', clerkRoutes)
 
 app.listen(port, () => {

@@ -1,4 +1,6 @@
-import { useUser } from '@clerk/clerk-react'
+import { useUserProfile } from '@/api/profiles'
+import Pending from '@/components/pending'
+import { useAuth } from '@clerk/clerk-react'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authed/profile/')({
@@ -6,8 +8,14 @@ export const Route = createFileRoute('/_authed/profile/')({
 })
 
 function RouteComponent() {
-  const { user } = useUser()
-  const username = user?.username || 'unknown'
+  const { userId } = useAuth()
+  const { data, isLoading, error } = useUserProfile(userId ?? '')
 
-  return <div>My profile {username}</div>
+  if (isLoading) return <Pending />
+  if (error) return <div className='flex flex-1 m-4'>Error retrieving profile data. Please try again</div>
+  if (!data) return <div className='flex flex-1 m-4'>Profile data not found</div>
+
+  const { username } = data
+
+  return <div className='flex flex-1 m-4'>My profile {username}</div>
 }
