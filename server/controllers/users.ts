@@ -2,7 +2,7 @@
 import { Request, Response } from 'express'
 import User from '../models/User'
 import UserProfile from '@/models/UserProfile'
-import type { WebhookEvent, UserJSON as ClerkUserJSON } from '@clerk/express'
+import type { WebhookEvent, UserJSON as ClerkUserJSON, DeletedObjectJSON } from '@clerk/express'
 import { Webhook } from 'svix'
 import { adjectives, animals, NumberDictionary, uniqueNamesGenerator } from 'unique-names-generator'
 import { createProfileFromClerkWebhook } from '@/controllers/userProfiles'
@@ -65,11 +65,15 @@ export const handleClerkWebhook = async (req: Request, res: Response): Promise<v
       await createUserFromClerkWebhook(event.data)
     }
 
-    res.status(200).send('Webhook received')
+    if (event.type === 'user.deleted') {
+      await deleteUserFromClerkWebhook(event.data)
+    }
+
+    res.status(200).send({ message: 'Webhook received' })
     return
   } catch (error) {
     console.error('Webhook processing error:', error)
-    res.status(500).send('Internal server error')
+    res.status(500).send({ message: 'Internal server error' })
     return
   }
 }
@@ -157,4 +161,18 @@ const createUserFromClerkWebhook = async (clerkUser: ClerkUserJSON): Promise<voi
 
   // Create the user profile
   await createProfileFromClerkWebhook(id, username ?? generatedUsername)
+}
+
+const deleteUserFromClerkWebhook = async (clerkUser: DeletedObjectJSON): Promise<void> => {
+  const { id } = clerkUser
+
+  // Find the user by Clerk ID
+  const user = await User.findOne({ userId: id })
+  if (!user) return
+
+  // Delete the user profile
+  await UserProfile.deleteOne({ userId: id })
+
+  // Delete the user record
+  await User.deleteOne({ userId: id })
 }
