@@ -11,6 +11,8 @@ import userRoutes from '@/routes/users'
 import profileRoutes from '@/routes/userProfiles'
 import clerkRoutes from '@/routes/clerk'
 import { checkAuth } from '@/middleware/checkAuth'
+import { logRequest } from '@/middleware/logRequest'
+import { errorHandler } from '@/middleware/errorHandler'
 
 dotenv.config()
 
@@ -22,6 +24,7 @@ const DEV_ALLOWED_ORIGINS = ['http://localhost:5173', 'https://your-production-u
 
 const PROD_ALLOWED_ORIGINS = ['https://your-production-url.com']
 
+app.use(logRequest)
 app.use(
   cors({
     credentials: true,
@@ -49,6 +52,12 @@ app.get('/healthcheck', (req, res) => {
 app.use('/users', checkAuth, userRoutes)
 app.use('/profiles', checkAuth, profileRoutes)
 app.use('/clerk', clerkRoutes)
+
+app.get('/api/crash', (req, res) => {
+  throw new Error('Intentional failure!')
+})
+
+app.use(errorHandler)
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
