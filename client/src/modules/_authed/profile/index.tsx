@@ -1,14 +1,12 @@
 import { useUserProfile } from '@/api/profiles'
 import Pending from '@/components/pending'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useAuth, UserProfile } from '@clerk/clerk-react'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useAuth } from '@clerk/clerk-react'
 import { createFileRoute } from '@tanstack/react-router'
-import { User } from 'lucide-react'
-import { dark } from '@clerk/themes'
-import { useTheme } from '@/hooks/useTheme'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
+import ProfileContent from '@/modules/_authed/profile/-profile-content'
+import AccountContent from '@/modules/_authed/profile/-account-content'
 
 export const Route = createFileRoute('/_authed/profile/')({
   component: RouteComponent,
@@ -17,7 +15,6 @@ export const Route = createFileRoute('/_authed/profile/')({
 function RouteComponent() {
   const { userId } = useAuth()
   const { data, isLoading, error } = useUserProfile(userId ?? '')
-  const { theme } = useTheme()
 
   const [selectedTab, setSelectedTab] = useState('profile')
 
@@ -39,31 +36,9 @@ function RouteComponent() {
           {selectedTab === 'profile' && <Button>Edit Profile</Button>}
         </div>
 
-        <TabsContent value='profile' className='flex flex-col mt-4 gap-4'>
-          <div className='flex items-center gap-8'>
-            <Avatar className='h-32 w-32 rounded-full'>
-              <AvatarImage src={profilePictureUrl} />
-              <AvatarFallback className='rounded-full'>
-                <User size={80} />
-                <span className='sr-only'>{`${displayName || username}'s profile picture`}</span>
-              </AvatarFallback>
-            </Avatar>
-            <div className='flex flex-col gap-2'>
-              {displayName && <h1>{displayName}</h1>}
-              <h2>@{username}</h2>
-              <p className='text-muted-foreground'>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                deserunt mollit anim id est laborum.
-              </p>
-            </div>
-          </div>
-        </TabsContent>
-        <TabsContent value='account' className='flex flex-col mt-4 justify-center items-center'>
-          <UserProfile appearance={{ baseTheme: theme === 'dark' ? dark : undefined }} />
-        </TabsContent>
+        <ProfileContent username={username} profilePictureUrl={profilePictureUrl} displayName={displayName} />
+
+        <AccountContent />
       </Tabs>
     </div>
   )
