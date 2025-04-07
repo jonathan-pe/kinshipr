@@ -31,6 +31,12 @@ export const createProfile = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: Request, res: Response) => {
   try {
+    // Logged in user can only update their own profile
+    if (req.auth?.userId !== req.params.userId) {
+      res.status(403).send({ message: 'Forbidden' })
+      return
+    }
+
     const updatedProfile = await UserProfile.findOneAndUpdate({ userId: req.params.userId }, req.body, { new: true })
     if (!updatedProfile) {
       res.status(404).send({ message: 'User profile not found' })
