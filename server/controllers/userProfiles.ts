@@ -33,7 +33,8 @@ export const updateProfile = async (req: Request, res: Response) => {
   try {
     const updatedProfile = await UserProfile.findOneAndUpdate({ userId: req.params.userId }, req.body, { new: true })
     if (!updatedProfile) {
-      return res.status(404).send({ message: 'User profile not found' })
+      res.status(404).send({ message: 'User profile not found' })
+      return
     }
     res.send(updatedProfile)
   } catch (error) {

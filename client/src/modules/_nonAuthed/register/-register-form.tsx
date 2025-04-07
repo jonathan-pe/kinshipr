@@ -121,7 +121,7 @@ export function RegisterForm({ setVerifying, className, ...props }: RegisterForm
             name='username'
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor='email'>Username</FormLabel>
+                <FormLabel htmlFor='username'>Username</FormLabel>
                 <FormControl>
                   <Input placeholder='bestuser' {...field} />
                 </FormControl>

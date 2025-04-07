@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import ProfileContent from '@/modules/_authed/profile/-profile-content'
 import AccountContent from '@/modules/_authed/profile/-account-content'
+import { EditProfileModal } from '@/modules/_authed/profile/-edit-profile-modal'
 
 export const Route = createFileRoute('/_authed/profile/')({
   component: RouteComponent,
@@ -17,12 +18,11 @@ function RouteComponent() {
   const { data, isLoading, error } = useUserProfile(userId ?? '')
 
   const [selectedTab, setSelectedTab] = useState('profile')
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false)
 
   if (isLoading) return <Pending />
   if (error) return <div className='flex flex-1 m-4'>Error retrieving profile data. Please try again</div>
   if (!data) return <div className='flex flex-1 m-4'>Profile data not found</div>
-
-  const { username, profilePictureUrl, displayName } = data
 
   return (
     <div className='flex flex-col flex-1 m-4 gap-4'>
@@ -33,13 +33,15 @@ function RouteComponent() {
             <TabsTrigger value='account'>Account</TabsTrigger>
           </TabsList>
 
-          {selectedTab === 'profile' && <Button>Edit Profile</Button>}
+          {selectedTab === 'profile' && <Button onClick={() => setShowEditProfileModal(true)}>Edit Profile</Button>}
         </div>
 
-        <ProfileContent username={username} profilePictureUrl={profilePictureUrl} displayName={displayName} />
+        <ProfileContent profileData={data} />
 
         <AccountContent />
       </Tabs>
+
+      <EditProfileModal open={showEditProfileModal} onClose={() => setShowEditProfileModal(false)} initialData={data} />
     </div>
   )
 }
