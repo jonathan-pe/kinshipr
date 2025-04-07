@@ -2,7 +2,7 @@
 import { Request, Response } from 'express'
 import UserProfile from '@/models/UserProfile'
 import { GoogleCloudStorageService, storageService } from '@/services/storage'
-import type { UserJSON as ClerkUserJSON } from '@clerk/express'
+import { clerkClient, type UserJSON as ClerkUserJSON } from '@clerk/express'
 
 export const getProfile = async (req: Request, res: Response) => {
   try {
@@ -42,9 +42,27 @@ export const updateProfile = async (req: Request, res: Response) => {
       res.status(404).send({ message: 'User profile not found' })
       return
     }
+
+    // If username is provided, update Clerk username
+    if (req.body.username) {
+      const clerkUser = await clerkClient.users.getUser(req.params.userId)
+      if (!clerkUser) {
+        res.status(404).send({ message: 'Clerk user not found' })
+        return
+      }
+
+      await clerkClient.users.updateUser(req.params.userId, {
+        username: req.body.username,
+      })
+    }
+
     res.send(updatedProfile)
   } catch (error) {
-    res.status(500).send({ message: 'Internal server error' })
+    if (error instanceof Error && error.message.includes('duplicate key error')) {
+      res.status(409).send({ message: 'Username already exists' })
+    } else {
+      res.status(500).send({ message: 'Internal server error' })
+    }
   }
 }
 

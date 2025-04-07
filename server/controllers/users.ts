@@ -69,6 +69,10 @@ export const handleClerkWebhook = async (req: Request, res: Response): Promise<v
       await deleteUserFromClerkWebhook(event.data)
     }
 
+    if (event.type === 'user.updated') {
+      await updateUserFromClerkWebhook(event.data)
+    }
+
     res.status(200).send({ message: 'Webhook received' })
     return
   } catch (error) {
@@ -175,4 +179,25 @@ const deleteUserFromClerkWebhook = async (clerkUser: DeletedObjectJSON): Promise
 
   // Delete the user record
   await User.deleteOne({ userId: id })
+}
+
+const updateUserFromClerkWebhook = async (clerkUser: ClerkUserJSON): Promise<void> => {
+  const { id, email_addresses, username } = clerkUser
+
+  // Find the user by Clerk ID
+  const user = await User.findOne({ userId: id })
+  if (!user) return
+
+  // Update the user record
+  user.email = email_addresses[0]?.email_address
+  await user.save()
+
+  // Update the user profile
+  const userProfile = await UserProfile.findOne({ userId: id })
+
+  if (userProfile) {
+    userProfile.username = username ?? undefined
+    userProfile.profilePictureUrl = clerkUser.image_url ?? undefined
+    await userProfile.save()
+  }
 }

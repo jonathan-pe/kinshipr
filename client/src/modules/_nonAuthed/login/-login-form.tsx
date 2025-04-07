@@ -102,7 +102,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               <FormItem>
                 <FormLabel htmlFor='email'>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder='username@domain.com' {...field} />
+                  <Input placeholder='username@domain.com' {...field} className='autofill:bg-transparent!' />
                 </FormControl>
                 <FormMessage />
               </FormItem>

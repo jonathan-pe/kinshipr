@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
 import { LoaderCircle } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
+import { isAxiosError } from 'axios'
 
 type Props = {
   open: boolean
@@ -52,8 +53,13 @@ export function EditProfileModal({ open, onClose, initialData }: Props) {
       toast.success('Profile updated successfully')
       onClose()
     } catch (error) {
-      console.error(error)
-      toast.error('Failed to update your profile', { description: 'Please try again' })
+      if (isAxiosError(error)) {
+        if (error.response?.status === 409) {
+          toast.error('Username already exists', { description: 'Please choose a different username' })
+        }
+      } else {
+        toast.error('Failed to update your profile', { description: 'Please try again' })
+      }
     }
   }
 
