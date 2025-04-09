@@ -4,6 +4,19 @@ import UserProfile from '@/models/UserProfile'
 import { GoogleCloudStorageService, storageService } from '@/services/storage'
 import { clerkClient, type UserJSON as ClerkUserJSON } from '@clerk/express'
 
+export const getCurrentUserProfile = async (req: Request, res: Response) => {
+  try {
+    const userProfile = await UserProfile.findOne({ userId: req.auth?.userId })
+    if (!userProfile) {
+      res.status(404).send({ message: 'User profile not found' })
+      return
+    }
+    res.status(200).send(userProfile)
+  } catch (error) {
+    res.status(500).send({ message: 'Internal server error' })
+  }
+}
+
 export const getProfile = async (req: Request, res: Response) => {
   try {
     const userProfile = await UserProfile.findOne({ userId: req.params.userId })
